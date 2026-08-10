@@ -484,6 +484,107 @@ dialog::backdrop {
   overflow: hidden !important;
 }
 
+/* =========================================================
+   DESKTOP STATUS + MODAL FIXES
+   Keep the mobile UI untouched.
+   ========================================================= */
+@media (min-width: 561px) {
+  /* Low stock: warning for remaining stock, red for out of stock. */
+  .mini-warning span {
+    color: var(--yellow);
+  }
+
+  .mini-danger span {
+    color: #e27b7b;
+  }
+
+  .mini-danger b {
+    color: #f0b1b1;
+  }
+
+  /* Inventory availability. */
+  .pill.available {
+    background: rgba(94, 156, 114, 0.16);
+    color: #8bd0a0;
+  }
+
+  .pill.unavailable {
+    background: rgba(100, 130, 170, 0.16);
+    color: #9bb7df;
+  }
+
+  /* Order status. */
+  .order-status {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    flex: 0 0 auto;
+    padding: 7px 10px;
+    border: 1px solid transparent;
+    border-radius: 999px;
+    font-size: 11px;
+    font-weight: 600;
+    white-space: nowrap;
+  }
+
+  .order-status.status-pending {
+    background: rgba(139, 111, 174, 0.16);
+    color: #c3add8;
+    border-color: rgba(139, 111, 174, 0.28);
+  }
+
+  .order-status.status-confirmed {
+    background: rgba(139, 111, 174, 0.18);
+    color: #c8b2dd;
+    border-color: rgba(139, 111, 174, 0.3);
+  }
+
+  .order-status.status-shipped {
+    background: rgba(105, 135, 185, 0.16);
+    color: #9fb8df;
+    border-color: rgba(105, 135, 185, 0.28);
+  }
+
+  .order-status.status-delivered {
+    background: rgba(94, 156, 114, 0.16);
+    color: #8bd0a0;
+    border-color: rgba(94, 156, 114, 0.28);
+  }
+
+  .order-status.status-cancelled,
+  .order-status.status-returned {
+    background: rgba(201, 92, 92, 0.14);
+    color: #df8585;
+    border-color: rgba(201, 92, 92, 0.28);
+  }
+
+  /* Modal/form text. */
+  .dialog-card,
+  .dialog-card h2,
+  .dialog-card h3,
+  .dialog-card h4,
+  .dialog-card label,
+  .dialog-card p,
+  .dialog-card span,
+  .dialog-card strong,
+  .dialog-card b,
+  .dialog-card small {
+    color: var(--text);
+  }
+
+  .dialog-card .muted,
+  .dialog-card .eyebrow {
+    color: var(--muted);
+  }
+
+  .dialog-card input,
+  .dialog-card select,
+  .dialog-card textarea {
+    color: var(--text);
+    background: #111214;
+  }
+}
+
 @media (max-width: 900px) {
   .sidebar {
     position: fixed;
@@ -932,5 +1033,199 @@ dialog::backdrop {
   .sidebar {
     overflow: hidden;
     overscroll-behavior: none;
+  }
+}
+
+@media (min-width: 769px) {
+  /* =======================================================
+     INCOMING STOCK
+     ======================================================= */
+
+  /* Semua badge status di Incoming */
+  #incomingRows .status,
+  #incomingRows .badge,
+  #incomingRows .status-badge {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    vertical-align: middle;
+    line-height: 1;
+    white-space: nowrap;
+    box-sizing: border-box;
+  }
+
+  /* ---------- IN PROGRESS ---------- */
+
+  #incomingRows .status.in-progress,
+  #incomingRows .badge.in-progress,
+  #incomingRows .status-badge.in-progress {
+    background: rgba(196, 157, 55, 0.14);
+    color: #c9a94a;
+    border-color: rgba(196, 157, 55, 0.25);
+  }
+
+  /* ---------- SHIPPED ---------- */
+
+  #incomingRows .status.shipped,
+  #incomingRows .badge.shipped,
+  #incomingRows .status-badge.shipped {
+    background: rgba(145, 113, 190, 0.14);
+    color: #a98bd4;
+    border-color: rgba(145, 113, 190, 0.25);
+  }
+
+  /* ---------- ON PROCESS ---------- */
+
+  #incomingRows .status.on-process,
+  #incomingRows .badge.on-process,
+  #incomingRows .status-badge.on-process {
+    background: rgba(91, 130, 174, 0.14);
+    color: #80a9d2;
+    border-color: rgba(91, 130, 174, 0.25);
+  }
+
+  /* ---------- REJECTED ---------- */
+
+  #incomingRows .status.rejected,
+  #incomingRows .badge.rejected,
+  #incomingRows .status-badge.rejected {
+    background: rgba(190, 72, 84, 0.14);
+    color: #e27b86;
+    border-color: rgba(190, 72, 84, 0.25);
+  }
+
+  /* ---------- ARRIVED ---------- */
+
+  #incomingRows .status.arrived,
+  #incomingRows .badge.arrived,
+  #incomingRows .status-badge.arrived {
+    background: rgba(68, 155, 103, 0.14);
+    color: #79c494;
+    border-color: rgba(68, 155, 103, 0.25);
+  }
+
+  /* =======================================================
+     PAID / UNPAID
+     ======================================================= */
+
+  #incomingRows .paid,
+  #incomingRows .payment-status.paid,
+  #incomingRows .payment.paid {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+
+    background: rgba(68, 155, 103, 0.14);
+    color: #79c494;
+    border-color: rgba(68, 155, 103, 0.25);
+
+    text-align: center;
+    line-height: 1;
+    white-space: nowrap;
+  }
+
+  #incomingRows .unpaid,
+  #incomingRows .payment-status.unpaid,
+  #incomingRows .payment.unpaid {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+
+    background: rgba(196, 157, 55, 0.14);
+    color: #c9a94a;
+    border-color: rgba(196, 157, 55, 0.25);
+
+    text-align: center;
+    line-height: 1;
+    white-space: nowrap;
+  }
+
+  /* =======================================================
+     ORDERS
+     ======================================================= */
+
+  /* Paksa status order benar-benar center */
+  #orderRows .status,
+  #orderRows .order-status,
+  #orderRows .status-badge,
+  #orderRows .badge {
+    display: inline-flex;
+
+    align-items: center;
+    justify-content: center;
+
+    text-align: center;
+    vertical-align: middle;
+
+    line-height: 1;
+    white-space: nowrap;
+
+    box-sizing: border-box;
+
+    min-width: 82px;
+    min-height: 30px;
+
+    padding: 7px 12px;
+  }
+
+  /* ---------- PENDING ---------- */
+
+  #orderRows .status.pending,
+  #orderRows .order-status.pending,
+  #orderRows .badge.pending {
+    background: rgba(196, 157, 55, 0.14);
+    color: #c9a94a;
+    border-color: rgba(196, 157, 55, 0.25);
+  }
+
+  /* ---------- CONFIRMED ---------- */
+
+  #orderRows .status.confirmed,
+  #orderRows .order-status.confirmed,
+  #orderRows .badge.confirmed {
+    background: rgba(145, 113, 190, 0.14);
+    color: #a98bd4;
+    border-color: rgba(145, 113, 190, 0.25);
+  }
+
+  /* ---------- SHIPPED ---------- */
+
+  #orderRows .status.shipped,
+  #orderRows .order-status.shipped,
+  #orderRows .badge.shipped {
+    background: rgba(91, 130, 174, 0.14);
+    color: #80a9d2;
+    border-color: rgba(91, 130, 174, 0.25);
+  }
+
+  /* ---------- DELIVERED ---------- */
+
+  #orderRows .status.delivered,
+  #orderRows .order-status.delivered,
+  #orderRows .badge.delivered {
+    background: rgba(68, 155, 103, 0.14);
+    color: #79c494;
+    border-color: rgba(68, 155, 103, 0.25);
+  }
+
+  /* ---------- CANCELLED ---------- */
+
+  #orderRows .status.cancelled,
+  #orderRows .order-status.cancelled,
+  #orderRows .badge.cancelled {
+    background: rgba(190, 72, 84, 0.14);
+    color: #e27b86;
+    border-color: rgba(190, 72, 84, 0.25);
+  }
+
+  /* ---------- RETURNED ---------- */
+
+  #orderRows .status.returned,
+  #orderRows .order-status.returned,
+  #orderRows .badge.returned {
+    background: rgba(145, 113, 190, 0.14);
+    color: #a98bd4;
+    border-color: rgba(145, 113, 190, 0.25);
   }
 }
