@@ -675,3 +675,49 @@ dialog::backdrop {
     font-size: 11px;
   }
 }
+
+/* Dialog typography */
+.dialog-card h2 {
+  color: var(--text);
+  font-size: 26px;
+  line-height: 1.15;
+  letter-spacing: -0.5px;
+}
+.dialog-card .eyebrow {
+  color: var(--purple2);
+}
+.dialog-card label {
+  color: #d6d0db;
+}
+
+/* Modal readability fix: keep all dialog typography visible on the dark surface. */
+.dialog-card,
+.dialog-card * {
+  color: var(--text);
+}
+.dialog-card .eyebrow {
+  color: var(--purple2);
+}
+.dialog-card label {
+  color: #d6d0db;
+}
+.dialog-card input,
+.dialog-card select,
+.dialog-card textarea {
+  color: var(--text);
+  background: #111214;
+}
+.dialog-card input::placeholder,
+.dialog-card textarea::placeholder {
+  color: #6f6a74;
+}
+.dialog-card .muted {
+  color: var(--muted);
+}
+.dialog-card .primary {
+  color: #fff;
+}
+.dialog-card .ghost,
+.dialog-card .refresh {
+  color: #ddd;
+}
