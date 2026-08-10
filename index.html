@@ -1,0 +1,185 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <title>Ellxozone Operations</title>
+    <link rel="stylesheet" href="style.css" />
+  </head>
+  <body>
+    <div id="toast"></div>
+
+    <section id="loginView" class="auth">
+      <div class="auth-card">
+        <img src="logo.png" class="logo" />
+        <p class="eyebrow">ELLXOZONE OPERATIONS</p>
+        <h1>Welcome back.</h1>
+        <p class="muted">Internal inventory & sales dashboard.</p>
+        <form id="loginForm">
+          <label>Email<input id="email" type="email" required /></label>
+          <label
+            >Password<input id="password" type="password" required
+          /></label>
+          <p id="loginError" class="error"></p>
+          <button id="loginBtn" class="primary">Login</button>
+        </form>
+      </div>
+    </section>
+
+    <div id="appView" class="hidden">
+      <aside class="sidebar">
+        <div class="brand">
+          <img src="logo.png" />
+          <div><b>ELLXOZONE</b><small>OPERATIONS</small></div>
+        </div>
+        <nav>
+          <button class="nav active" data-view="overview">Overview</button>
+          <button class="nav" data-view="inventory">Inventory</button>
+          <button class="nav" data-view="incoming">Incoming Stock</button>
+          <button class="nav" data-view="orders">Orders</button>
+          <button class="nav" data-view="movements">Stock Movement</button>
+        </nav>
+        <div class="owner">
+          <small>Owner access</small><b id="currentKeeper">Owner</b
+          ><button id="logoutBtn">Logout</button>
+        </div>
+      </aside>
+
+      <main class="main">
+        <header>
+          <div>
+            <p class="eyebrow">ELLXOZONE OPERATIONS</p>
+            <h1 id="pageTitle">Overview</h1>
+          </div>
+          <button id="refreshBtn" class="refresh">↻</button>
+        </header>
+
+        <section id="overview" class="view">
+          <div class="stats">
+            <article>
+              <span>Available</span><b id="statStock">0</b
+              ><small>animals in stock</small>
+            </article>
+            <article>
+              <span>Incoming</span><b id="statIncoming">0</b
+              ><small>active shipments</small>
+            </article>
+            <article>
+              <span>Pending Orders</span><b id="statPending">0</b
+              ><small>waiting confirmation</small>
+            </article>
+            <article>
+              <span>Total Orders</span><b id="statOrders">0</b
+              ><small>all channels</small>
+            </article>
+          </div>
+          <div class="grid2">
+            <section class="panel">
+              <p class="eyebrow">SALES FLOW</p>
+              <h2>Orders by channel</h2>
+              <div id="channels"></div>
+            </section>
+            <section class="panel">
+              <p class="eyebrow">LOW STOCK</p>
+              <h2>Needs attention</h2>
+              <div id="lowStock"></div>
+            </section>
+          </div>
+        </section>
+
+        <section id="inventory" class="view hidden">
+          <div class="toolbar">
+            <input
+              id="inventorySearch"
+              placeholder="Search species..."
+            /><button id="addInventory" class="primary">+ Add species</button>
+          </div>
+          <div class="table">
+            <table>
+              <thead>
+                <tr>
+                  <th>Species</th>
+                  <th>Qty</th>
+                  <th>Availability</th>
+                  <th>Notes</th>
+                </tr>
+              </thead>
+              <tbody id="inventoryRows"></tbody>
+            </table>
+          </div>
+        </section>
+
+        <section id="incoming" class="view hidden">
+          <div class="toolbar">
+            <input id="incomingSearch" placeholder="Search species..." /><button
+              id="addIncoming"
+              class="primary"
+            >
+              + Incoming stock
+            </button>
+          </div>
+          <div class="table">
+            <table>
+              <thead>
+                <tr>
+                  <th>Species</th>
+                  <th>Qty</th>
+                  <th>Status</th>
+                  <th>No. Resi</th>
+                  <th>Paid/Unpaid</th>
+                  <th>ETA</th>
+                  <th>Last Update</th>
+                </tr>
+              </thead>
+              <tbody id="incomingRows"></tbody>
+            </table>
+          </div>
+        </section>
+
+        <section id="orders" class="view hidden">
+          <div class="toolbar">
+            <input
+              id="ordersSearch"
+              placeholder="Search order / buyer..."
+            /><button id="addOrder" class="primary">+ New order</button>
+          </div>
+          <div id="orderRows" class="orders"></div>
+        </section>
+
+        <section id="movements" class="view hidden">
+          <div class="table">
+            <table>
+              <thead>
+                <tr>
+                  <th>Species</th>
+                  <th>Change</th>
+                  <th>Type</th>
+                  <th>Reference</th>
+                  <th>Date</th>
+                </tr>
+              </thead>
+              <tbody id="movementRows"></tbody>
+            </table>
+          </div>
+        </section>
+      </main>
+    </div>
+
+    <dialog id="dialog">
+      <div class="dialog-card">
+        <div class="dialog-head">
+          <div>
+            <p class="eyebrow" id="dialogEyebrow">RECORD</p>
+            <h2 id="dialogTitle"></h2>
+          </div>
+          <button data-close class="refresh">×</button>
+        </div>
+        <div id="dialogBody"></div>
+      </div>
+    </dialog>
+
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="config.js"></script>
+    <script src="app.js"></script>
+  </body>
+</html>
