@@ -226,10 +226,31 @@ textarea {
   font-size: 32px;
   letter-spacing: -1px;
 }
+.header-actions {
+  display: flex;
+  align-items: center;
+  gap: 9px;
+}
+.refresh,
+.mobile-menu {
+  width: 44px;
+  height: 44px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  line-height: 1;
+  padding: 0;
+}
 .refresh {
-  width: 42px;
-  height: 42px;
-  font-size: 20px;
+  font-size: 22px;
+}
+.mobile-menu {
+  display: none;
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  background: #17151a;
+  color: #ddd;
+  font-size: 22px;
 }
 .stats {
   display: grid;
@@ -459,45 +480,78 @@ dialog::backdrop {
   opacity: 1;
   transform: translate(-50%, 0);
 }
+.no-scroll {
+  overflow: hidden !important;
+}
+
 @media (max-width: 900px) {
   .sidebar {
     position: fixed;
-    right: 0;
-    bottom: auto;
-    width: 100%;
-    height: 64px;
-    padding: 8px 10px;
-    flex-direction: row;
-    align-items: center;
-    border-right: 0;
-    border-bottom: 1px solid var(--border);
-    overflow: auto;
+    left: -275px;
+    right: auto;
+    top: 0;
+    bottom: 0;
+    width: 260px;
+    height: 100dvh;
+    max-height: 100dvh;
+    padding: 24px 18px;
+    background: #0b0b0b;
+    border-right: 1px solid var(--border);
+    border-bottom: 0;
+    flex-direction: column;
+    align-items: stretch;
+    overflow: hidden;
+    transition: left 0.22s ease;
+    box-shadow: 18px 0 45px #0008;
+    z-index: 20;
+  }
+  .sidebar.open {
+    left: 0;
   }
   .brand {
-    padding: 0 4px;
+    padding: 4px 10px 26px;
   }
   .brand img {
-    width: 38px;
-    height: 38px;
+    width: 42px;
+    height: 42px;
   }
   .brand div {
-    display: none;
+    display: block;
   }
   .sidebar nav {
-    display: flex;
-    overflow: auto;
-    gap: 3px;
+    display: grid;
+    overflow: visible;
+    gap: 5px;
   }
   .nav {
-    white-space: nowrap;
-    width: auto;
+    width: 100%;
+    white-space: normal;
   }
   .owner {
-    display: none;
+    display: block;
+    margin-top: 24px;
+    flex: 0 0 auto;
+  }
+  .nav-backdrop {
+    position: fixed;
+    inset: 0;
+    background: #0009;
+    backdrop-filter: blur(2px);
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.2s ease;
+    z-index: 15;
+  }
+  .nav-backdrop.open {
+    opacity: 1;
+    pointer-events: auto;
   }
   .main {
     margin-left: 0;
-    padding: 88px 14px 50px;
+    padding: 30px 18px 50px;
+  }
+  .mobile-menu {
+    display: inline-flex;
   }
   .stats {
     grid-template-columns: repeat(2, 1fr);
@@ -508,11 +562,24 @@ dialog::backdrop {
 }
 @media (max-width: 560px) {
   .main {
-    padding-left: 11px;
-    padding-right: 11px;
+    padding: 24px 11px 50px;
+  }
+  .main header {
+    margin-bottom: 24px;
   }
   .main h1 {
     font-size: 26px;
+  }
+  .header-actions {
+    gap: 7px;
+  }
+  .refresh,
+  .mobile-menu {
+    width: 42px;
+    height: 42px;
+  }
+  .refresh {
+    font-size: 21px;
   }
   .stats {
     gap: 8px;
@@ -542,182 +609,328 @@ dialog::backdrop {
 }
 
 /* =========================================================
-   SEMANTIC STATUS UI
+   MOBILE RESPONSIVE OVERRIDES
+   - No horizontal scrolling for data tables.
+   - Tables become vertical cards on small screens.
+   - Existing hamburger navigation is kept.
    ========================================================= */
-.pill,
-.order-status {
-  align-items: center;
-  gap: 6px;
-  line-height: 1;
-  font-weight: 500;
-}
-.pill-dot {
-  width: 6px;
-  height: 6px;
-  flex: 0 0 6px;
-  border-radius: 50%;
-  background: currentColor;
-  opacity: 0.95;
-}
-.pill.available {
-  background: #173225;
-  color: #83c89b;
-  border: 1px solid #28543b;
-}
-.pill.unavailable {
-  background: #18263d;
-  color: #8db5ff;
-  border: 1px solid #29466f;
-}
-.pill.paid {
-  background: #173225;
-  color: #83c89b;
-  border: 1px solid #28543b;
-}
-.pill.unpaid {
-  background: #302719;
-  color: #e0b45d;
-  border: 1px solid #5a4626;
-}
-.pill.status-in-progress {
-  background: #302719;
-  color: #e0b45d;
-  border: 1px solid #5a4626;
-}
-.pill.status-shipped {
-  background: #202c48;
-  color: #91b5ff;
-  border: 1px solid #344c79;
-}
-.pill.status-on-process {
-  background: #2b2440;
-  color: #c0a5ec;
-  border: 1px solid #4a3a68;
-}
-.pill.status-rejected {
-  background: #3a2025;
-  color: #ed8b91;
-  border: 1px solid #6b343c;
-}
-.pill.status-arrived {
-  background: #173225;
-  color: #83c89b;
-  border: 1px solid #28543b;
-}
-
-.order-status {
-  display: inline-flex;
-  min-height: 34px;
-  padding: 0 12px;
-  border: 1px solid var(--border);
-  border-radius: 999px;
-  font-size: 12px;
-  white-space: nowrap;
-}
-.order-status.status-pending {
-  background: #2b2632;
-  color: #c7b3da;
-  border-color: #443a4d;
-}
-.order-status.status-confirmed {
-  background: #18263d;
-  color: #8db5ff;
-  border-color: #29466f;
-}
-.order-status.status-shipped {
-  background: #202c48;
-  color: #91b5ff;
-  border-color: #344c79;
-}
-.order-status.status-delivered {
-  background: #173225;
-  color: #83c89b;
-  border-color: #28543b;
-}
-.order-status.status-cancelled {
-  background: #3a2025;
-  color: #ed8b91;
-  border-color: #6b343c;
-}
-.order-status.status-returned {
-  background: #302719;
-  color: #e0b45d;
-  border-color: #5a4626;
-}
-.status-action {
-  margin-top: 2px;
-}
-
-.mini-danger span {
-  color: #ef777f !important;
-}
-.mini-warning span {
-  color: #e0b45d !important;
-}
-
-.owner small {
-  text-transform: uppercase;
-  letter-spacing: 0.1em;
-  font-family: "DM Mono", monospace;
-}
-.owner b {
-  margin-top: 4px;
-  font-size: 14px;
-}
-
 @media (max-width: 560px) {
-  .order-head {
+  html,
+  body {
+    width: 100%;
+    max-width: 100%;
+    overflow-x: hidden;
+  }
+
+  #appView,
+  .main,
+  .view,
+  .panel,
+  .table,
+  .orders {
+    max-width: 100%;
+    min-width: 0;
+  }
+
+  .main {
+    overflow-x: hidden;
+  }
+
+  .header-actions {
+    align-items: center;
+  }
+
+  .refresh,
+  .mobile-menu {
+    flex: 0 0 42px;
+    width: 42px;
+    height: 42px;
+    padding: 0;
+    margin: 0;
+    line-height: 1;
+    vertical-align: middle;
+  }
+
+  .refresh {
+    display: inline-grid;
+    place-items: center;
+    font-size: 21px;
+  }
+
+  /* Data tables become stacked cards instead of horizontal tables. */
+  .table {
+    overflow: visible;
+    width: 100%;
+  }
+
+  .table table {
+    width: 100%;
+    min-width: 0;
+    display: block;
+  }
+
+  .table thead {
+    display: none;
+  }
+
+  .table tbody {
+    display: grid;
+    gap: 10px;
+    padding: 10px;
+  }
+
+  .table tbody tr {
+    display: grid;
+    gap: 0;
+    width: 100%;
+    min-width: 0;
+    padding: 4px 0;
+    background: #111;
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    overflow: hidden;
+  }
+
+  .table tbody td {
+    display: flex;
     align-items: flex-start;
+    justify-content: space-between;
+    gap: 14px;
+    width: 100%;
+    min-width: 0;
+    padding: 11px 13px;
+    border-bottom: 1px solid #242226;
+    white-space: normal;
+    overflow-wrap: anywhere;
+    text-align: right;
   }
+
+  .table tbody td:last-child {
+    border-bottom: 0;
+  }
+
+  .table tbody td::before {
+    flex: 0 0 auto;
+    color: var(--muted);
+    font:
+      500 9px "DM Mono",
+      monospace;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    text-align: left;
+  }
+
+  /* Inventory */
+  #inventoryRows td:nth-child(1)::before {
+    content: "Species";
+  }
+  #inventoryRows td:nth-child(2)::before {
+    content: "Qty";
+  }
+  #inventoryRows td:nth-child(3)::before {
+    content: "Availability";
+  }
+  #inventoryRows td:nth-child(4)::before {
+    content: "Notes";
+  }
+
+  /* Incoming stock */
+  #incomingRows td:nth-child(1)::before {
+    content: "Species";
+  }
+  #incomingRows td:nth-child(2)::before {
+    content: "Qty";
+  }
+  #incomingRows td:nth-child(3)::before {
+    content: "Status";
+  }
+  #incomingRows td:nth-child(4)::before {
+    content: "No. Resi";
+  }
+  #incomingRows td:nth-child(5)::before {
+    content: "Payment";
+  }
+  #incomingRows td:nth-child(6)::before {
+    content: "ETA";
+  }
+  #incomingRows td:nth-child(7)::before {
+    content: "Last Update";
+  }
+
+  /* Stock movement */
+  #movementRows td:nth-child(1)::before {
+    content: "Species";
+  }
+  #movementRows td:nth-child(2)::before {
+    content: "Change";
+  }
+  #movementRows td:nth-child(3)::before {
+    content: "Type";
+  }
+  #movementRows td:nth-child(4)::before {
+    content: "Reference";
+  }
+  #movementRows td:nth-child(5)::before {
+    content: "Date";
+  }
+
+  /* Empty table rows should remain simple, not become fake cards. */
+  .table tbody tr:has(.empty) {
+    display: block;
+    padding: 0;
+    background: transparent;
+    border: 0;
+  }
+
+  .table tbody tr:has(.empty) td {
+    display: block;
+    border: 0;
+    text-align: center;
+    padding: 32px 12px !important;
+  }
+
+  .table tbody tr:has(.empty) td::before {
+    display: none;
+  }
+
+  /* Keep long tracking numbers readable without creating page overflow. */
+  #incomingRows td:nth-child(4) {
+    word-break: break-all;
+  }
+
+  /* Status badges */
+  .pill.available {
+    background: rgba(94, 156, 114, 0.16);
+    color: #8bd0a0;
+  }
+
+  .pill.unavailable {
+    background: rgba(100, 130, 170, 0.16);
+    color: #9bb7df;
+  }
+
+  .pill.paid {
+    background: rgba(94, 156, 114, 0.16);
+    color: #8bd0a0;
+  }
+
+  .pill.unpaid {
+    background: rgba(214, 164, 71, 0.14);
+    color: #dfb85d;
+  }
+
+  /* Order status styling */
   .order-status {
-    min-height: 30px;
-    padding: 0 9px;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    flex: 0 0 auto;
+    padding: 7px 10px;
+    border: 1px solid transparent;
+    border-radius: 999px;
     font-size: 11px;
+    font-weight: 600;
+    white-space: nowrap;
   }
-}
 
-/* Dialog typography */
-.dialog-card h2 {
-  color: var(--text);
-  font-size: 26px;
-  line-height: 1.15;
-  letter-spacing: -0.5px;
-}
-.dialog-card .eyebrow {
-  color: var(--purple2);
-}
-.dialog-card label {
-  color: #d6d0db;
-}
+  .order-status.status-pending {
+    background: rgba(139, 111, 174, 0.16);
+    color: #c3add8;
+    border-color: rgba(139, 111, 174, 0.28);
+  }
 
-/* Modal readability fix: keep all dialog typography visible on the dark surface. */
-.dialog-card,
-.dialog-card * {
-  color: var(--text);
-}
-.dialog-card .eyebrow {
-  color: var(--purple2);
-}
-.dialog-card label {
-  color: #d6d0db;
-}
-.dialog-card input,
-.dialog-card select,
-.dialog-card textarea {
-  color: var(--text);
-  background: #111214;
-}
-.dialog-card input::placeholder,
-.dialog-card textarea::placeholder {
-  color: #6f6a74;
-}
-.dialog-card .muted {
-  color: var(--muted);
-}
-.dialog-card .primary {
-  color: #fff;
-}
-.dialog-card .ghost,
-.dialog-card .refresh {
-  color: #ddd;
+  .order-status.status-confirmed {
+    background: rgba(139, 111, 174, 0.18);
+    color: #c8b2dd;
+    border-color: rgba(139, 111, 174, 0.3);
+  }
+
+  .order-status.status-shipped {
+    background: rgba(105, 135, 185, 0.16);
+    color: #9fb8df;
+    border-color: rgba(105, 135, 185, 0.28);
+  }
+
+  .order-status.status-delivered {
+    background: rgba(94, 156, 114, 0.16);
+    color: #8bd0a0;
+    border-color: rgba(94, 156, 114, 0.28);
+  }
+
+  .order-status.status-cancelled,
+  .order-status.status-returned {
+    background: rgba(201, 92, 92, 0.14);
+    color: #df8585;
+    border-color: rgba(201, 92, 92, 0.28);
+  }
+
+  /* Low-stock warning: red only when actually out of stock. */
+  .mini-warning span {
+    color: var(--yellow);
+  }
+
+  .mini-danger span {
+    color: #e27b7b;
+  }
+
+  .mini-danger b {
+    color: #f0b1b1;
+  }
+
+  /* Modal text must stay readable; previous black heading issue is prevented. */
+  .dialog-card,
+  .dialog-card h2,
+  .dialog-card label,
+  .dialog-card p,
+  .dialog-card strong,
+  .dialog-card b {
+    color: var(--text);
+  }
+
+  .dialog-card .muted {
+    color: var(--muted);
+  }
+
+  /* Mobile modal: never create horizontal page/modal scrolling. */
+  dialog {
+    width: calc(100vw - 20px);
+    max-width: calc(100vw - 20px);
+    max-height: calc(100dvh - 20px);
+    margin: auto;
+    overflow: hidden;
+  }
+
+  .dialog-card {
+    width: 100%;
+    max-width: 100%;
+    max-height: calc(100dvh - 20px);
+    overflow-x: hidden;
+    overflow-y: auto;
+    padding: 18px;
+  }
+
+  .dialog-card form,
+  .dialog-card .form,
+  .dialog-card .actions,
+  .dialog-card label {
+    min-width: 0;
+    max-width: 100%;
+  }
+
+  .dialog-card input,
+  .dialog-card select,
+  .dialog-card textarea {
+    min-width: 0;
+    max-width: 100%;
+  }
+
+  .dialog-card .actions {
+    flex-wrap: wrap;
+  }
+
+  /* Drawer stays fixed; the page behind it is locked by JS while open. */
+  .sidebar {
+    overflow: hidden;
+    overscroll-behavior: none;
+  }
 }

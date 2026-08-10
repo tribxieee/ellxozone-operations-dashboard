@@ -214,7 +214,7 @@ function addInventory() {
 }
 function addIncoming() {
   dialog(
-    "Incoming stock",
+    "Add incoming stock",
     "INCOMING STOCK",
     `<form class="form"><label>Species<input name="species" required></label><label>Qty<input name="qty" type="number" min="1" required></label><label>Status<select name="status"><option>In progress</option><option>Shipped</option><option>On Process</option><option>Rejected</option><option>Arrived</option></select></label><label>No. Resi<input name="receipt_number"></label><label>Paid / Unpaid<select name="payment_status"><option>Unpaid</option><option>Paid</option></select></label><label>ETA<input name="eta" type="date"></label><div class="actions"><button type="button" class="ghost" data-close>Cancel</button><button class="primary">Save</button></div></form>`,
     async (f) => {
@@ -300,8 +300,8 @@ function changeStatus(id) {
     }[o.status] || [];
   if (!next.length) return toast("This order is final.");
   dialog(
-    `Order #${o.order_number}`,
-    "STATUS",
+    `Order #${o.order_number} — Change status`,
+    "ORDER STATUS",
     `<form class="form"><p class="muted">Current: <b>${o.status}</b></p><label>New status<select name="status">${next.map((x) => `<option>${x}</option>`).join("")}</select></label><div class="actions"><button type="button" class="ghost" data-close>Cancel</button><button class="primary">Update</button></div></form>`,
     async (f) => {
       const { error } = await db
@@ -347,6 +347,26 @@ function authUI() {
 }
 function setup() {
   $("#loginForm").onsubmit = login;
+  const mobileMenu = $("#mobileMenuBtn"),
+    sidebar = $(".sidebar"),
+    backdrop = $("#navBackdrop");
+  const closeMobileMenu = () => {
+    sidebar.classList.remove("open");
+    backdrop.classList.remove("open");
+    document.body.classList.remove("no-scroll");
+    mobileMenu?.setAttribute("aria-expanded", "false");
+  };
+  mobileMenu?.addEventListener("click", () => {
+    const open = !sidebar.classList.contains("open");
+    sidebar.classList.toggle("open", open);
+    backdrop.classList.toggle("open", open);
+    document.body.classList.toggle("no-scroll", open);
+    mobileMenu.setAttribute("aria-expanded", String(open));
+  });
+  backdrop?.addEventListener("click", closeMobileMenu);
+  document.addEventListener("keydown", (e) => {
+    if (e.key === "Escape") closeMobileMenu();
+  });
   $("#logoutBtn").onclick = () => db.auth.signOut();
   $("#refreshBtn").onclick = () => load().then(() => toast("Refreshed ✓"));
   $$("[data-view]").forEach(
@@ -357,6 +377,7 @@ function setup() {
         $$(".nav").forEach((n) => n.classList.remove("active"));
         b.classList.add("active");
         $("#pageTitle").textContent = b.textContent;
+        closeMobileMenu();
       }),
   );
   $("#inventorySearch").oninput = renderInventory;
