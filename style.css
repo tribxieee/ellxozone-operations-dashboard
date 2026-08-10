@@ -540,3 +540,138 @@ dialog::backdrop {
     padding: 18px;
   }
 }
+
+/* =========================================================
+   SEMANTIC STATUS UI
+   ========================================================= */
+.pill,
+.order-status {
+  align-items: center;
+  gap: 6px;
+  line-height: 1;
+  font-weight: 500;
+}
+.pill-dot {
+  width: 6px;
+  height: 6px;
+  flex: 0 0 6px;
+  border-radius: 50%;
+  background: currentColor;
+  opacity: 0.95;
+}
+.pill.available {
+  background: #173225;
+  color: #83c89b;
+  border: 1px solid #28543b;
+}
+.pill.unavailable {
+  background: #18263d;
+  color: #8db5ff;
+  border: 1px solid #29466f;
+}
+.pill.paid {
+  background: #173225;
+  color: #83c89b;
+  border: 1px solid #28543b;
+}
+.pill.unpaid {
+  background: #302719;
+  color: #e0b45d;
+  border: 1px solid #5a4626;
+}
+.pill.status-in-progress {
+  background: #302719;
+  color: #e0b45d;
+  border: 1px solid #5a4626;
+}
+.pill.status-shipped {
+  background: #202c48;
+  color: #91b5ff;
+  border: 1px solid #344c79;
+}
+.pill.status-on-process {
+  background: #2b2440;
+  color: #c0a5ec;
+  border: 1px solid #4a3a68;
+}
+.pill.status-rejected {
+  background: #3a2025;
+  color: #ed8b91;
+  border: 1px solid #6b343c;
+}
+.pill.status-arrived {
+  background: #173225;
+  color: #83c89b;
+  border: 1px solid #28543b;
+}
+
+.order-status {
+  display: inline-flex;
+  min-height: 34px;
+  padding: 0 12px;
+  border: 1px solid var(--border);
+  border-radius: 999px;
+  font-size: 12px;
+  white-space: nowrap;
+}
+.order-status.status-pending {
+  background: #2b2632;
+  color: #c7b3da;
+  border-color: #443a4d;
+}
+.order-status.status-confirmed {
+  background: #18263d;
+  color: #8db5ff;
+  border-color: #29466f;
+}
+.order-status.status-shipped {
+  background: #202c48;
+  color: #91b5ff;
+  border-color: #344c79;
+}
+.order-status.status-delivered {
+  background: #173225;
+  color: #83c89b;
+  border-color: #28543b;
+}
+.order-status.status-cancelled {
+  background: #3a2025;
+  color: #ed8b91;
+  border-color: #6b343c;
+}
+.order-status.status-returned {
+  background: #302719;
+  color: #e0b45d;
+  border-color: #5a4626;
+}
+.status-action {
+  margin-top: 2px;
+}
+
+.mini-danger span {
+  color: #ef777f !important;
+}
+.mini-warning span {
+  color: #e0b45d !important;
+}
+
+.owner small {
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  font-family: "DM Mono", monospace;
+}
+.owner b {
+  margin-top: 4px;
+  font-size: 14px;
+}
+
+@media (max-width: 560px) {
+  .order-head {
+    align-items: flex-start;
+  }
+  .order-status {
+    min-height: 30px;
+    padding: 0 9px;
+    font-size: 11px;
+  }
+}

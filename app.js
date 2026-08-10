@@ -18,6 +18,23 @@ const fmt = (v) =>
         year: "numeric",
       }).format(new Date(v))
     : "—";
+const statusClass = (v) =>
+  String(v || "")
+    .toLowerCase()
+    .replaceAll(" ", "-");
+function userDisplay() {
+  const meta = user?.user_metadata || {};
+  return (
+    meta.display_name ||
+    meta.name ||
+    ((meta.role || "").toLowerCase() === "owner" ? "Owner" : meta.role) ||
+    "Owner"
+  );
+}
+function userRole() {
+  const meta = user?.user_metadata || {};
+  return meta.role || "Owner";
+}
 let user = null,
   inventory = [],
   incoming = [],
@@ -91,10 +108,10 @@ function renderOverview() {
   $("#lowStock").innerHTML = low.length
     ? low
         .slice(0, 6)
-        .map(
-          (x) =>
-            `<div class="mini"><b>${esc(x.species)}</b><span>${x.quantity ? x.quantity + " available" : "Out of stock"}</span></div>`,
-        )
+        .map((x) => {
+          const out = Number(x.quantity) <= 0;
+          return `<div class="mini ${out ? "mini-danger" : "mini-warning"}"><b>${esc(x.species)}</b><span>${out ? "Out of stock" : x.quantity + " available"}</span></div>`;
+        })
         .join("")
     : `<p class="muted">Everything looks healthy.</p>`;
 }
@@ -103,10 +120,11 @@ function renderInventory() {
   const rows = inventory.filter((x) => x.species.toLowerCase().includes(q));
   $("#inventoryRows").innerHTML = rows.length
     ? rows
-        .map(
-          (x) =>
-            `<tr><td><b>${esc(x.species)}</b></td><td class="qty">${x.quantity}</td><td><span class="pill">${esc(x.availability)}</span></td><td class="muted">${esc(x.notes || "—")}</td></tr>`,
-        )
+        .map((x) => {
+          const available =
+            String(x.availability || "").toLowerCase() === "available";
+          return `<tr><td><b>${esc(x.species)}</b></td><td class="qty">${x.quantity}</td><td><span class="pill ${available ? "available" : "unavailable"}"><span class="pill-dot"></span>${esc(x.availability)}</span></td><td class="muted">${esc(x.notes || "—")}</td></tr>`;
+        })
         .join("")
     : `<tr><td colspan="4" class="empty">No inventory.</td></tr>`;
 }
@@ -117,7 +135,7 @@ function renderIncoming() {
     ? rows
         .map(
           (x) =>
-            `<tr><td><b>${esc(x.species)}</b></td><td>${x.qty}</td><td><span class="pill">${esc(x.status)}</span></td><td>${esc(x.receipt_number || "—")}</td><td><span class="pill ${x.payment_status === "Paid" ? "good" : "warn"}">${x.payment_status}</span></td><td>${fmt(x.eta)}</td><td>${fmt(x.last_update)}</td></tr>`,
+            `<tr><td><b>${esc(x.species)}</b></td><td>${x.qty}</td><td><span class="pill status-${statusClass(x.status)}"><span class="pill-dot"></span>${esc(x.status)}</span></td><td>${esc(x.receipt_number || "—")}</td><td><span class="pill ${x.payment_status === "Paid" ? "paid" : "unpaid"}"><span class="pill-dot"></span>${x.payment_status}</span></td><td>${fmt(x.eta)}</td><td>${fmt(x.last_update)}</td></tr>`,
         )
         .join("")
     : `<tr><td colspan="7" class="empty">No incoming stock.</td></tr>`;
@@ -137,7 +155,7 @@ function renderOrders() {
         .map((o) => {
           const b = buyer(o.buyer_id),
             it = items.filter((x) => x.order_id === o.id);
-          return `<article class="order"><div class="order-head"><div><p class="eyebrow">ORDER #${o.order_number}</p><h2>${esc(b?.name || "No buyer")}</h2></div><span class="pill">${esc(o.status)}</span></div><div class="meta">${o.sales_channel} · ${fmt(o.order_date)} ${o.tracking_number ? "· Resi " + esc(o.tracking_number) : ""}</div><div class="chips">${it.map((x) => `<span>${esc(x.species)} × ${x.quantity}</span>`).join("")}</div><button class="ghost" data-status="${o.id}">Change status</button></article>`;
+          return `<article class="order"><div class="order-head"><div><p class="eyebrow">ORDER #${o.order_number}</p><h2>${esc(b?.name || "No buyer")}</h2></div><span class="order-status status-${statusClass(o.status)}"><span class="pill-dot"></span>${esc(o.status)}</span></div><div class="meta">${o.sales_channel} · ${fmt(o.order_date)} ${o.tracking_number ? "· Resi " + esc(o.tracking_number) : ""}</div><div class="chips">${it.map((x) => `<span>${esc(x.species)} × ${x.quantity}</span>`).join("")}</div><button class="ghost status-action" data-status="${o.id}">Change status</button></article>`;
         })
         .join("")
     : `<div class="empty-card">No orders.</div>`;
@@ -179,12 +197,14 @@ function addInventory() {
     `<form class="form"><label>Species<input name="species" required></label><label>Quantity<input name="quantity" type="number" min="0" value="0" required></label><label>Notes<textarea name="notes"></textarea></label><div class="actions"><button type="button" class="ghost" data-close>Cancel</button><button class="primary">Save</button></div></form>`,
     async (f) => {
       const q = Number(f.get("quantity"));
-      const { error } = await db.from("inventory").insert({
-        species: f.get("species").trim(),
-        quantity: q,
-        availability: q > 0 ? "Available" : "Unavailable",
-        notes: f.get("notes") || null,
-      });
+      const { error } = await db
+        .from("inventory")
+        .insert({
+          species: f.get("species").trim(),
+          quantity: q,
+          availability: q > 0 ? "Available" : "Unavailable",
+          notes: f.get("notes") || null,
+        });
       if (error) throw error;
       closeDialog();
       toast("Species added ✓");
@@ -198,14 +218,16 @@ function addIncoming() {
     "INCOMING STOCK",
     `<form class="form"><label>Species<input name="species" required></label><label>Qty<input name="qty" type="number" min="1" required></label><label>Status<select name="status"><option>In progress</option><option>Shipped</option><option>On Process</option><option>Rejected</option><option>Arrived</option></select></label><label>No. Resi<input name="receipt_number"></label><label>Paid / Unpaid<select name="payment_status"><option>Unpaid</option><option>Paid</option></select></label><label>ETA<input name="eta" type="date"></label><div class="actions"><button type="button" class="ghost" data-close>Cancel</button><button class="primary">Save</button></div></form>`,
     async (f) => {
-      const { error } = await db.from("incoming_stock").insert({
-        species: f.get("species").trim(),
-        qty: Number(f.get("qty")),
-        status: f.get("status"),
-        receipt_number: f.get("receipt_number") || null,
-        payment_status: f.get("payment_status"),
-        eta: f.get("eta") || null,
-      });
+      const { error } = await db
+        .from("incoming_stock")
+        .insert({
+          species: f.get("species").trim(),
+          qty: Number(f.get("qty")),
+          status: f.get("status"),
+          receipt_number: f.get("receipt_number") || null,
+          payment_status: f.get("payment_status"),
+          eta: f.get("eta") || null,
+        });
       if (error) throw error;
       closeDialog();
       toast("Incoming stock added ✓");
@@ -249,12 +271,14 @@ function addOrder() {
         .select()
         .single();
       if (oe) throw oe;
-      const { error: ie } = await db.from("order_items").insert({
-        order_id: o.id,
-        inventory_id: inv.id,
-        species: inv.species,
-        quantity: Number(f.get("quantity")),
-      });
+      const { error: ie } = await db
+        .from("order_items")
+        .insert({
+          order_id: o.id,
+          inventory_id: inv.id,
+          species: inv.species,
+          quantity: Number(f.get("quantity")),
+        });
       if (ie) throw ie;
       closeDialog();
       toast(`Order #${o.order_number} created ✓`);
@@ -316,7 +340,8 @@ function authUI() {
   $("#loginView").classList.toggle("hidden", ok);
   $("#appView").classList.toggle("hidden", !ok);
   if (ok) {
-    $("#currentKeeper").textContent = user.email?.split("@")[0] || "Owner";
+    $("#currentKeeper").textContent = userDisplay();
+    $("#currentKeeperRole").textContent = userRole();
     load().catch((e) => toast(e.message));
   }
 }
