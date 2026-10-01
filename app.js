@@ -72,7 +72,7 @@ async function load() {
   });
   [inventory, incoming, buyers, orders, items, movements] = r.map(
     (x) => x.data || [],
-  );  
+  );
   render();
 }
 function render() {
@@ -90,6 +90,7 @@ function render() {
   renderInventory();
   renderIncoming();
   renderOrders();
+  renderSourcing();
   renderMovements();
   renderOverview();
 }
@@ -162,6 +163,39 @@ function renderOrders() {
         .join("")
     : `<div class="empty-card">No orders.</div>`;
 }
+function renderSourcing() {
+  const q = ($("#sourcingSearch")?.value || "").toLowerCase();
+
+  const rows = sourcing.filter(
+    (x) =>
+      String(x.species || "").toLowerCase().includes(q) ||
+      String(x.source_name || "").toLowerCase().includes(q) ||
+      String(x.pic || "").toLowerCase().includes(q),
+  );
+
+  $("#sourcingRows").innerHTML = rows.length
+    ? rows
+        .map(
+          (x) => `
+            <tr>
+              <td><b>${esc(x.species)}</b></td>
+              <td>${x.quantity}</td>
+              <td>${esc(x.source_name || "—")}</td>
+              <td>${esc(x.pic || "—")}</td>
+              <td>
+                <span class="pill status-${statusClass(x.status)}">
+                  <span class="pill-dot"></span>
+                  ${esc(x.status)}
+                </span>
+              </td>
+              <td>${fmt(x.target_date)}</td>
+              <td>${esc(x.last_update || "—")}</td>
+            </tr>
+          `,
+        )
+        .join("")
+    : `<tr><td colspan="7" class="empty">No sourcing records.</td></tr>`;
+}
 function renderMovements() {
   $("#movementRows").innerHTML = movements.length
     ? movements
@@ -229,6 +263,110 @@ function addIncoming() {
       if (error) throw error;
       closeDialog();
       toast("Incoming stock added ✓");
+      load();
+    },
+  );
+}
+function addSourcing() {
+  dialog(
+    "New sourcing",
+    "SOURCING",
+    `<form class="form">
+      <label>
+        Species
+        <input name="species" required>
+      </label>
+
+      <label>
+        Quantity
+        <input name="quantity" type="number" min="1" value="1" required>
+      </label>
+
+      <label>
+        Source
+        <input name="source_name" placeholder="Supplier / hunter / partner">
+      </label>
+
+      <label>
+        Source contact
+        <input name="source_contact">
+      </label>
+
+      <label>
+        PIC
+        <input name="pic">
+      </label>
+
+      <label>
+        Status
+        <select name="status">
+          <option>Looking</option>
+          <option>Contacted</option>
+          <option>Confirmed</option>
+          <option>On Process</option>
+          <option>Ready</option>
+          <option>Arrived</option>
+          <option>Cancelled</option>
+        </select>
+      </label>
+
+      <label>
+        Target date
+        <input name="target_date" type="date">
+      </label>
+
+      <label>
+        ETA
+        <input name="eta" type="date">
+      </label>
+
+      <label>
+        Price
+        <input name="price" type="number" min="0" value="0">
+      </label>
+
+      <label>
+        DP
+        <input name="dp" type="number" min="0" value="0">
+      </label>
+
+      <label>
+        Last update
+        <input name="last_update" placeholder="e.g. Waiting supplier confirmation">
+      </label>
+
+      <label>
+        Notes
+        <textarea name="notes"></textarea>
+      </label>
+
+      <div class="actions">
+        <button type="button" class="ghost" data-close>Cancel</button>
+        <button class="primary">Save sourcing</button>
+      </div>
+    </form>`,
+    async (f) => {
+      const { error } = await db
+        .from("sourcing")
+        .insert({
+          species: f.get("species").trim(),
+          quantity: Number(f.get("quantity")),
+          source_name: f.get("source_name") || null,
+          source_contact: f.get("source_contact") || null,
+          pic: f.get("pic") || null,
+          status: f.get("status"),
+          target_date: f.get("target_date") || null,
+          eta: f.get("eta") || null,
+          price: Number(f.get("price") || 0),
+          dp: Number(f.get("dp") || 0),
+          last_update: f.get("last_update") || null,
+          notes: f.get("notes") || null,
+        });
+
+      if (error) throw error;
+
+      closeDialog();
+      toast("Sourcing added ✓");
       load();
     },
   );
@@ -379,9 +517,11 @@ function setup() {
   $("#inventorySearch").oninput = renderInventory;
   $("#incomingSearch").oninput = renderIncoming;
   $("#ordersSearch").oninput = renderOrders;
+  $("#sourcingSearch").oninput = renderSourcing;
   $("#addInventory").onclick = addInventory;
   $("#addIncoming").onclick = addIncoming;
   $("#addOrder").onclick = addOrder;
+  $("#addSourcing").onclick = addSourcing;
   $("#orderRows").onclick = (e) => {
     const b = e.target.closest("[data-status]");
     if (b) changeStatus(b.dataset.status);
