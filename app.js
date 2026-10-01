@@ -119,7 +119,11 @@ function renderOverview() {
         `<div class="channel"><div><span>${x[0]}</span><b>${x[1]}</b></div><i style="width:${(x[1] / max) * 100}%"></i></div>`,
     )
     .join("");
-  const low = inventory.filter((x) => Number(x.quantity) <= 1);
+  const low = inventory.filter(
+    (x) =>
+      String(x.availability || "").toLowerCase() === "available" &&
+      Number(x.quantity) <= 1,
+  );
   $("#lowStock").innerHTML = low.length
     ? low
         .slice(0, 6)
@@ -129,6 +133,31 @@ function renderOverview() {
         })
         .join("")
     : `<p class="muted">Everything looks healthy.</p>`;
+  const attention = sourcing.filter((x) =>
+    ["Watch", "Critical"].includes(x.risk),
+  );
+
+  $("#sourcingAttention").innerHTML = attention.length
+    ? attention
+        .slice(0, 6)
+        .map(
+          (x) => `
+            <div
+              class="mini sourcing-attention-item ${
+                x.risk === "Critical" ? "mini-danger" : "mini-warning"
+              }"
+              data-overview-sourcing="${x.id}"
+            >
+              <b>${esc(x.species)}</b>
+              <span>
+                ${esc(x.status)} · ${esc(x.risk)}
+                ${x.target_date ? ` · Target ${fmt(x.target_date)}` : ""}
+              </span>
+            </div>
+          `,
+        )
+        .join("")
+    : `<p class="muted">No sourcing issues.</p>`;
 }
 function renderInventory() {
   const q = ($("#inventorySearch")?.value || "").toLowerCase();
@@ -196,6 +225,9 @@ function renderSourcing() {
         .map(
           (x) => `
             <tr class="sourcing-row" data-sourcing-id="${x.id}">
+              <td><b>${esc(x.species)}</b></td>
+              <td>${x.quantity}</td>
+              <td>${esc(x.source_name || "—")}</td>
               <td>${esc(x.pic || "—")}</td>
               <td>
                 <span class="pill status-${statusClass(x.risk)}">
@@ -221,69 +253,97 @@ function openSourcing(id) {
   const x = sourcing.find((item) => item.id === id);
   if (!x) return;
 
-  const updates = sourcingUpdates.filter((u) => u.sourcing_id === x.id);
+  const updates = sourcingUpdates
+    .filter((u) => u.sourcing_id === x.id)
+    .sort((a, b) => new Date(b.created_at) - new Date(a.created_at));
 
   dialog(
     x.species,
     "SOURCING DETAIL",
     `
-      <div class="form">
+      <div class="sourcing-detail">
 
-        <div>
-          <p class="eyebrow">RISK</p>
-          <span class="pill status-${statusClass(x.risk)}">
-            <span class="pill-dot"></span>
-            ${esc(x.risk || "Normal")}
-          </span>
-        </div>
-        
-        <div>
-          <p class="eyebrow">STATUS</p>
-          <span class="pill status-${statusClass(x.status)}">
-            <span class="pill-dot"></span>
-            ${esc(x.status)}
-          </span>
-        </div>
+        <div class="sourcing-summary">
+          <div class="sourcing-summary-main">
+            <p class="eyebrow">SOURCING</p>
+            <h2>${esc(x.species)}</h2>
+            <p class="muted">
+              ${x.quantity} unit · ${esc(x.source_name || "Source not assigned")}
+            </p>
+          </div>
 
-        <div>
-          <p class="eyebrow">SOURCE</p>
-          <p>${esc(x.source_name || "—")}</p>
-        </div>
+          <div class="sourcing-summary-status">
+            <span class="pill status-${statusClass(x.risk)}">
+              <span class="pill-dot"></span>
+              ${esc(x.risk || "Normal")}
+            </span>
 
-        <div>
-          <p class="eyebrow">PIC</p>
-          <p>${esc(x.pic || "—")}</p>
+            <span class="pill status-${statusClass(x.status)}">
+              <span class="pill-dot"></span>
+              ${esc(x.status)}
+            </span>
+          </div>
         </div>
 
-        <div>
-          <p class="eyebrow">QUANTITY</p>
-          <p>${x.quantity}</p>
+        <div class="sourcing-info-grid">
+
+          <div class="sourcing-info">
+            <span class="eyebrow">SOURCE</span>
+            <b>${esc(x.source_name || "—")}</b>
+          </div>
+
+          <div class="sourcing-info">
+            <span class="eyebrow">PIC</span>
+            <b>${esc(x.pic || "—")}</b>
+          </div>
+
+          <div class="sourcing-info">
+            <span class="eyebrow">TARGET DATE</span>
+            <b>${fmt(x.target_date)}</b>
+          </div>
+
+          <div class="sourcing-info">
+            <span class="eyebrow">ETA</span>
+            <b>${fmt(x.eta)}</b>
+          </div>
+
+          <div class="sourcing-info">
+            <span class="eyebrow">PRICE</span>
+            <b>${x.price ? Number(x.price).toLocaleString("id-ID") : "—"}</b>
+          </div>
+
+          <div class="sourcing-info">
+            <span class="eyebrow">DP</span>
+            <b>${x.dp ? Number(x.dp).toLocaleString("id-ID") : "—"}</b>
+          </div>
+
         </div>
 
-        <div>
-          <p class="eyebrow">TARGET DATE</p>
-          <p>${fmt(x.target_date)}</p>
-        </div>
+        ${
+          x.last_update
+            ? `
+              <div class="sourcing-last-update">
+                <span class="eyebrow">LAST UPDATE</span>
+                <p>${esc(x.last_update)}</p>
+              </div>
+            `
+            : ""
+        }
 
-        <div>
-          <p class="eyebrow">ETA</p>
-          <p>${fmt(x.eta)}</p>
-        </div>
+        ${
+          x.notes
+            ? `
+              <div class="sourcing-notes">
+                <span class="eyebrow">NOTES</span>
+                <p>${esc(x.notes)}</p>
+              </div>
+            `
+            : ""
+        }
 
-        <div>
-          <p class="eyebrow">LAST UPDATE</p>
-          <p>${esc(x.last_update || "—")}</p>
-        </div>
+        <div class="sourcing-history">
 
-        <div>
-          <p class="eyebrow">NOTES</p>
-          <p>${esc(x.notes || "—")}</p>
-        </div>
-
-        <hr>
-
-        <div>
-          <div style="display:flex;justify-content:space-between;align-items:center;gap:12px;">
+          <div class="sourcing-history-head">
             <div>
               <p class="eyebrow">UPDATE HISTORY</p>
               <h3>Timeline</h3>
@@ -305,6 +365,7 @@ function openSourcing(id) {
                     .map(
                       (u) => `
                         <div class="sourcing-update">
+
                           <div class="sourcing-update-head">
                             <b>${esc(u.status || "Update")}</b>
                             <span class="muted">${fmt(u.created_at)}</span>
@@ -317,6 +378,7 @@ function openSourcing(id) {
                               ? `<small class="muted">by ${esc(u.created_by)}</small>`
                               : ""
                           }
+
                         </div>
                       `,
                     )
@@ -324,7 +386,9 @@ function openSourcing(id) {
                 : `<p class="muted">No updates yet.</p>`
             }
           </div>
+
         </div>
+
       </div>
     `,
     async () => {},
@@ -436,14 +500,18 @@ function renderMovements() {
     : `<tr><td colspan="5" class="empty">No movements.</td></tr>`;
 }
 function dialog(title, eyebrow, html, submit) {
-  $("#dialogTitle").textContent = title;
   $("#dialogEyebrow").textContent = eyebrow;
+
   $("#dialogBody").innerHTML = html;
+
   $("#dialog").showModal();
+
   const f = $("#dialog form");
+
   if (f)
     f.onsubmit = async (e) => {
       e.preventDefault();
+
       try {
         await submit(new FormData(f));
       } catch (x) {
@@ -500,89 +568,146 @@ function addSourcing() {
   dialog(
     "New sourcing",
     "SOURCING",
-    `<form class="form">
-      <label>
-        Species
-        <input name="species" required>
-      </label>
+    `
+      <form class="form">
 
-      <label>
-        Quantity
-        <input name="quantity" type="number" min="1" value="1" required>
-      </label>
+        <div class="form-section">
+          <p class="form-section-title">Basic info</p>
 
-      <label>
-        Source
-        <input name="source_name" placeholder="Supplier / hunter / partner">
-      </label>
+          <div class="form-grid">
+            <label>
+              Species
+              <input name="species" required>
+            </label>
 
-      <label>
-        Source contact
-        <input name="source_contact">
-      </label>
+            <label>
+              Quantity
+              <input
+                name="quantity"
+                type="number"
+                min="1"
+                value="1"
+                required
+              >
+            </label>
+          </div>
+        </div>
 
-      <label>
-        PIC
-        <input name="pic">
-      </label>
+        <div class="form-section">
+          <p class="form-section-title">Source</p>
 
-      <label>
-        Risk
-        <select name="risk">
-          <option>Normal</option>
-          <option>Watch</option>
-          <option>Critical</option>
-        </select>
-      </label>
+          <label>
+            Source
+            <input
+              name="source_name"
+              placeholder="Supplier / hunter / partner"
+            >
+          </label>
 
-      <label>
-        Status
-        <select name="status">
-          <option>Looking</option>
-          <option>Contacted</option>
-          <option>Confirmed</option>
-          <option>On Process</option>
-          <option>Ready</option>
-          <option>Arrived</option>
-          <option>Cancelled</option>
-        </select>
-      </label>
+          <label>
+            Source contact
+            <input name="source_contact">
+          </label>
 
-      <label>
-        Target date
-        <input name="target_date" type="date">
-      </label>
+          <label>
+            PIC
+            <input name="pic">
+          </label>
+        </div>
 
-      <label>
-        ETA
-        <input name="eta" type="date">
-      </label>
+        <div class="form-section">
+          <p class="form-section-title">Tracking</p>
 
-      <label>
-        Price
-        <input name="price" type="number" min="0" value="0">
-      </label>
+          <div class="form-grid">
+            <label>
+              Risk
+              <select name="risk">
+                <option>Normal</option>
+                <option>Watch</option>
+                <option>Critical</option>
+              </select>
+            </label>
 
-      <label>
-        DP
-        <input name="dp" type="number" min="0" value="0">
-      </label>
+            <label>
+              Status
+              <select name="status">
+                <option>Looking</option>
+                <option>Contacted</option>
+                <option>Confirmed</option>
+                <option>On Process</option>
+                <option>Ready</option>
+                <option>Arrived</option>
+                <option>Cancelled</option>
+              </select>
+            </label>
 
-      <label>
-        Last update
-        <input name="last_update" placeholder="e.g. Waiting supplier confirmation">
-      </label>
+            <label>
+              Target date
+              <input name="target_date" type="date">
+            </label>
 
-      <label>
-        Notes
-        <textarea name="notes"></textarea>
-      </label>
+            <label>
+              ETA
+              <input name="eta" type="date">
+            </label>
+          </div>
+        </div>
 
-      <div class="actions">
-        <button type="button" class="ghost" data-close>Cancel</button>
-        <button class="primary">Save sourcing</button>
-      </div>
-    </form>`,
+        <div class="form-section">
+          <p class="form-section-title">Finance</p>
+
+          <div class="form-grid">
+            <label>
+              Price
+              <input
+                name="price"
+                type="number"
+                min="0"
+                value="0"
+              >
+            </label>
+
+            <label>
+              DP
+              <input
+                name="dp"
+                type="number"
+                min="0"
+                value="0"
+              >
+            </label>
+          </div>
+        </div>
+
+        <div class="form-section">
+          <p class="form-section-title">Notes</p>
+
+          <label>
+            Last update
+            <input
+              name="last_update"
+              placeholder="e.g. Waiting supplier confirmation"
+            >
+          </label>
+
+          <label>
+            Notes
+            <textarea name="notes"></textarea>
+          </label>
+        </div>
+
+        <div class="actions">
+          <button type="button" class="ghost" data-close>
+            Cancel
+          </button>
+
+          <button class="primary">
+            Save sourcing
+          </button>
+        </div>
+
+      </form>
+    `,
     async (f) => {
       const { error } = await db.from("sourcing").insert({
         species: f.get("species").trim(),

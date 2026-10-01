@@ -1,21 +1,31 @@
 @import url("https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=Inter:wght@400;500;600;700&display=swap");
+
 :root {
   --bg: #080808;
   --surface: #101010;
   --card: #151515;
   --border: #29262d;
+
   --purple: #8b6fae;
   --purple2: #b8a3cc;
   --darkp: #241b2c;
+
   --text: #f4f1f7;
   --muted: #85808c;
+
   --green: #5e9c72;
   --yellow: #d6a447;
   --red: #c95c5c;
 }
+
+/* =========================================================
+   RESET
+   ========================================================= */
+
 * {
   box-sizing: border-box;
 }
+
 html,
 body {
   margin: 0;
@@ -24,21 +34,30 @@ body {
   color: var(--text);
   font-family: Inter, system-ui, sans-serif;
 }
+
+body {
+  overflow-x: hidden;
+}
+
 button,
 input,
 select,
 textarea {
   font: inherit;
 }
+
 button {
   cursor: pointer;
 }
+
 .hidden {
   display: none !important;
 }
+
 .muted {
   color: var(--muted);
 }
+
 .eyebrow {
   margin: 0 0 7px;
   color: var(--purple2);
@@ -47,12 +66,18 @@ button {
     monospace;
   letter-spacing: 0.14em;
 }
+
+/* =========================================================
+   AUTH
+   ========================================================= */
+
 .auth {
   min-height: 100vh;
   display: grid;
   place-items: center;
   padding: 20px;
 }
+
 .auth-card {
   width: min(420px, 100%);
   padding: 38px;
@@ -61,27 +86,32 @@ button {
   border-radius: 22px;
   box-shadow: 0 30px 100px #000;
 }
+
 .logo {
   width: 70px;
   height: 70px;
   object-fit: contain;
 }
+
 .auth-card h1 {
   font-size: 32px;
   margin: 6px 0;
 }
+
 .auth-card form,
 .form {
   display: grid;
   gap: 14px;
   margin-top: 22px;
 }
+
 label {
   display: grid;
   gap: 7px;
   font-size: 12px;
   color: #c9c4cd;
 }
+
 input,
 select,
 textarea {
@@ -93,42 +123,63 @@ textarea {
   border-radius: 11px;
   outline: 0;
 }
+
 input:focus,
 select:focus,
 textarea:focus {
   border-color: var(--purple);
   box-shadow: 0 0 0 3px #8b6fae18;
 }
+
 textarea {
   resize: vertical;
   min-height: 80px;
 }
+
 .primary,
 .ghost,
 .refresh {
   border-radius: 10px;
   padding: 10px 14px;
 }
+
 .primary {
   border: 1px solid #9d80c0;
   background: var(--purple);
   color: #fff;
   font-weight: 600;
 }
+
+.primary:hover {
+  filter: brightness(1.08);
+}
+
 .ghost,
 .refresh {
   border: 1px solid var(--border);
   background: #17151a;
   color: #ddd;
 }
+
+.ghost:hover,
+.refresh:hover {
+  background: #1d1921;
+}
+
 .error {
   color: #df8181;
   min-height: 18px;
   font-size: 12px;
 }
+
+/* =========================================================
+   APP / SIDEBAR
+   ========================================================= */
+
 #appView {
   min-height: 100vh;
 }
+
 .sidebar {
   position: fixed;
   left: 0;
@@ -140,37 +191,46 @@ textarea {
   border-right: 1px solid var(--border);
   display: flex;
   flex-direction: column;
-  z-index: 5;
+  z-index: 20;
 }
+
 .brand {
   display: flex;
   align-items: center;
   gap: 11px;
   padding: 4px 10px 34px;
 }
+
 .brand img {
   width: 42px;
   height: 42px;
   object-fit: contain;
 }
+
 .brand b,
 .brand small {
   display: block;
 }
+
 .brand b {
   font-size: 13px;
   letter-spacing: 0.12em;
 }
+
 .brand small {
   margin-top: 3px;
   color: var(--muted);
-  font: 500 10px "DM Mono";
+  font:
+    500 10px "DM Mono",
+    monospace;
   letter-spacing: 0.12em;
 }
+
 .sidebar nav {
   display: grid;
   gap: 5px;
 }
+
 .nav {
   border: 0;
   background: transparent;
@@ -179,29 +239,35 @@ textarea {
   padding: 11px 12px;
   border-radius: 10px;
 }
+
 .nav:hover {
   background: #151218;
   color: #fff;
 }
+
 .nav.active {
   background: var(--darkp);
   color: var(--purple2);
   box-shadow: inset 0 0 0 1px #3b2d47;
 }
+
 .owner {
   margin-top: auto;
   border: 1px solid var(--border);
   border-radius: 12px;
   padding: 12px;
 }
+
 .owner small,
 .owner b {
   display: block;
 }
+
 .owner small {
   font-size: 10px;
   color: var(--muted);
 }
+
 .owner button {
   margin-top: 12px;
   width: 100%;
@@ -211,26 +277,44 @@ textarea {
   color: #a98282;
   text-align: left;
 }
+
+.owner button:hover {
+  color: #df8585;
+}
+
+.nav-backdrop {
+  display: none;
+}
+
+/* =========================================================
+   MAIN
+   ========================================================= */
+
 .main {
   margin-left: 245px;
   padding: 34px clamp(16px, 4vw, 58px) 70px;
+  min-width: 0;
 }
+
 .main header {
   display: flex;
   justify-content: space-between;
   align-items: center;
   margin-bottom: 30px;
 }
+
 .main h1 {
   margin: 0;
   font-size: 32px;
   letter-spacing: -1px;
 }
+
 .header-actions {
   display: flex;
   align-items: center;
   gap: 9px;
 }
+
 .refresh,
 .mobile-menu {
   width: 44px;
@@ -241,9 +325,11 @@ textarea {
   line-height: 1;
   padding: 0;
 }
+
 .refresh {
   font-size: 22px;
 }
+
 .mobile-menu {
   display: none;
   border: 1px solid var(--border);
@@ -252,12 +338,18 @@ textarea {
   color: #ddd;
   font-size: 22px;
 }
+
+/* =========================================================
+   OVERVIEW
+   ========================================================= */
+
 .stats {
   display: grid;
   grid-template-columns: repeat(4, 1fr);
   gap: 14px;
   margin-bottom: 18px;
 }
+
 .stats article,
 .panel,
 .order {
@@ -265,84 +357,157 @@ textarea {
   border: 1px solid var(--border);
   border-radius: 14px;
 }
+
 .stats article {
   padding: 20px;
   min-height: 125px;
 }
+
 .stats span,
 .stats small {
   display: block;
   color: var(--muted);
 }
+
 .stats b {
   display: block;
   font-size: 35px;
   margin: 8px 0 2px;
 }
+
 .stats small {
   font-size: 11px;
 }
+
+/*
+  Overview uses three panels:
+  Sales Flow / Low Stock / Sourcing Attention
+*/
+
 .grid2 {
   display: grid;
-  grid-template-columns: 1.3fr 1fr;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
   gap: 16px;
 }
+
 .panel {
   padding: 22px;
   min-height: 240px;
 }
+
 .panel h2 {
   margin: 0;
   font-size: 17px;
 }
+
+/* Sales channels */
+
 .channel {
   margin: 18px 0;
 }
+
 .channel > div {
   display: flex;
   justify-content: space-between;
   margin-bottom: 8px;
   font-size: 13px;
 }
+
 .channel i {
   display: block;
   height: 7px;
   border-radius: 99px;
   background: var(--purple);
 }
-.channel {
-  border-bottom: 0;
-}
+
+/* Low stock */
+
 .mini {
   display: flex;
   justify-content: space-between;
+  gap: 12px;
   padding: 13px 0;
   border-bottom: 1px solid #222;
 }
+
+.mini:last-child {
+  border-bottom: 0;
+}
+
 .mini span {
-  color: var(--yellow);
   font-size: 12px;
 }
+
+.mini-warning span {
+  color: var(--yellow);
+}
+
+.mini-danger span {
+  color: #e27b7b;
+}
+
+.mini-danger b {
+  color: #f0b1b1;
+}
+
+/* Sourcing attention */
+
+.sourcing-attention-item {
+  cursor: default;
+  padding: 13px 0;
+  border-bottom: 1px solid #222;
+  transition:
+    color 0.15s ease,
+    border-color 0.15s ease;
+}
+
+.sourcing-attention-item:last-child {
+  border-bottom: 0;
+}
+
+.sourcing-attention-item b {
+  display: block;
+}
+
+.sourcing-attention-item span {
+  display: block;
+  margin-top: 3px;
+  font-size: 11px;
+  color: var(--muted);
+}
+
+/* =========================================================
+   TOOLBAR
+   ========================================================= */
+
 .toolbar {
   display: flex;
   justify-content: space-between;
   gap: 10px;
   margin-bottom: 15px;
 }
+
 .toolbar input {
   max-width: 340px;
 }
+
+/* =========================================================
+   TABLE
+   ========================================================= */
+
 .table {
   overflow: auto;
   border: 1px solid var(--border);
   border-radius: 14px;
   background: #101010;
 }
+
 table {
   width: 100%;
   min-width: 760px;
   border-collapse: collapse;
 }
+
 th,
 td {
   padding: 14px 15px;
@@ -351,71 +516,127 @@ td {
   font-size: 13px;
   white-space: nowrap;
 }
+
 th {
   color: var(--muted);
-  font: 500 10px "DM Mono";
+  font:
+    500 10px "DM Mono",
+    monospace;
   text-transform: uppercase;
   letter-spacing: 0.08em;
 }
+
 tr:last-child td {
-  border: 0;
+  border-bottom: 0;
 }
+
 .qty,
 .plus {
   color: var(--purple2);
   font-weight: 700;
 }
+
 .minus {
   color: #df8181;
 }
-.pill {
-  display: inline-flex;
-  padding: 4px 8px;
-  border-radius: 99px;
-  background: #2b2630;
-  color: #d7cddd;
-  font-size: 11px;
-}
-.pill.good {
-  background: #173022;
-  color: #83c89b;
-}
-.pill.warn {
-  background: #342c1c;
-  color: #dfb85d;
-}
+
 .empty {
   text-align: center;
   color: var(--muted);
   padding: 32px !important;
 }
+
+/* =========================================================
+   GENERAL PILLS
+   ========================================================= */
+
+.pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 5px 9px;
+  border-radius: 99px;
+  background: #2b2630;
+  color: #d7cddd;
+  font-size: 11px;
+  white-space: nowrap;
+}
+
+.pill-dot {
+  width: 5px;
+  height: 5px;
+  border-radius: 50%;
+  background: currentColor;
+  flex: 0 0 auto;
+}
+
+.pill.good {
+  background: #173022;
+  color: #83c89b;
+}
+
+.pill.warn {
+  background: #342c1c;
+  color: #dfb85d;
+}
+
+.pill.available {
+  background: rgba(94, 156, 114, 0.16);
+  color: #8bd0a0;
+}
+
+.pill.unavailable {
+  background: rgba(100, 130, 170, 0.16);
+  color: #9bb7df;
+}
+
+.pill.paid {
+  background: rgba(68, 155, 103, 0.14);
+  color: #79c494;
+}
+
+.pill.unpaid {
+  background: rgba(196, 157, 55, 0.14);
+  color: #c9a94a;
+}
+
+/* =========================================================
+   ORDERS
+   ========================================================= */
+
 .orders {
   display: grid;
   gap: 12px;
 }
+
 .order {
   padding: 20px;
 }
+
 .order-head {
   display: flex;
   justify-content: space-between;
   gap: 15px;
 }
+
 .order h2 {
   margin: 4px 0 0;
   font-size: 17px;
 }
+
 .meta {
   color: var(--muted);
   font-size: 12px;
   margin: 14px 0;
 }
+
 .chips {
   display: flex;
   flex-wrap: wrap;
   gap: 7px;
   margin-bottom: 15px;
 }
+
 .chips span {
   padding: 7px 9px;
   border: 1px solid #2c2730;
@@ -423,6 +644,7 @@ tr:last-child td {
   border-radius: 8px;
   font-size: 12px;
 }
+
 .empty-card {
   padding: 40px;
   text-align: center;
@@ -430,37 +652,503 @@ tr:last-child td {
   border: 1px dashed var(--border);
   border-radius: 14px;
 }
+
+.status-action {
+  margin-top: 2px;
+}
+
+/* =========================================================
+   ORDER STATUS
+   ========================================================= */
+
+.order-status {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  flex: 0 0 auto;
+  min-width: 82px;
+  min-height: 30px;
+  padding: 7px 12px;
+  border: 1px solid transparent;
+  border-radius: 999px;
+  font-size: 11px;
+  font-weight: 600;
+  white-space: nowrap;
+}
+
+.order-status.status-pending,
+#orderRows .status.pending,
+#orderRows .order-status.pending,
+#orderRows .status-badge.pending,
+#orderRows .badge.pending {
+  background: rgba(196, 157, 55, 0.14);
+  color: #c9a94a;
+  border-color: rgba(196, 157, 55, 0.25);
+}
+
+.order-status.status-confirmed,
+#orderRows .status.confirmed,
+#orderRows .order-status.confirmed,
+#orderRows .status-badge.confirmed,
+#orderRows .badge.confirmed {
+  background: rgba(145, 113, 190, 0.14);
+  color: #a98bd4;
+  border-color: rgba(145, 113, 190, 0.25);
+}
+
+.order-status.status-shipped,
+#orderRows .status.shipped,
+#orderRows .order-status.shipped,
+#orderRows .status-badge.shipped,
+#orderRows .badge.shipped {
+  background: rgba(91, 130, 174, 0.14);
+  color: #80a9d2;
+  border-color: rgba(91, 130, 174, 0.25);
+}
+
+.order-status.status-delivered,
+#orderRows .status.delivered,
+#orderRows .order-status.delivered,
+#orderRows .status-badge.delivered,
+#orderRows .badge.delivered {
+  background: rgba(68, 155, 103, 0.14);
+  color: #79c494;
+  border-color: rgba(68, 155, 103, 0.25);
+}
+
+.order-status.status-cancelled,
+.order-status.status-returned,
+#orderRows .status.cancelled,
+#orderRows .order-status.cancelled,
+#orderRows .status-badge.cancelled,
+#orderRows .badge.cancelled {
+  background: rgba(190, 72, 84, 0.14);
+  color: #e27b86;
+  border-color: rgba(190, 72, 84, 0.25);
+}
+
+#orderRows .status.returned,
+#orderRows .order-status.returned,
+#orderRows .status-badge.returned,
+#orderRows .badge.returned {
+  background: rgba(145, 113, 190, 0.14);
+  color: #a98bd4;
+  border-color: rgba(145, 113, 190, 0.25);
+}
+
+/* =========================================================
+   INCOMING STATUS
+   ========================================================= */
+
+#incomingRows .status,
+#incomingRows .badge,
+#incomingRows .status-badge {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  vertical-align: middle;
+  line-height: 1;
+  white-space: nowrap;
+  box-sizing: border-box;
+}
+
+#incomingRows .status.in-progress,
+#incomingRows .badge.in-progress,
+#incomingRows .status-badge.in-progress {
+  background: rgba(196, 157, 55, 0.14);
+  color: #c9a94a;
+  border-color: rgba(196, 157, 55, 0.25);
+}
+
+#incomingRows .status.shipped,
+#incomingRows .badge.shipped,
+#incomingRows .status-badge.shipped {
+  background: rgba(145, 113, 190, 0.14);
+  color: #a98bd4;
+  border-color: rgba(145, 113, 190, 0.25);
+}
+
+#incomingRows .status.on-process,
+#incomingRows .badge.on-process,
+#incomingRows .status-badge.on-process {
+  background: rgba(91, 130, 174, 0.14);
+  color: #80a9d2;
+  border-color: rgba(91, 130, 174, 0.25);
+}
+
+#incomingRows .status.rejected,
+#incomingRows .badge.rejected,
+#incomingRows .status-badge.rejected {
+  background: rgba(190, 72, 84, 0.14);
+  color: #e27b86;
+  border-color: rgba(190, 72, 84, 0.25);
+}
+
+#incomingRows .status.arrived,
+#incomingRows .badge.arrived,
+#incomingRows .status-badge.arrived {
+  background: rgba(68, 155, 103, 0.14);
+  color: #79c494;
+  border-color: rgba(68, 155, 103, 0.25);
+}
+
+/* =========================================================
+   SOURCING TABLE
+   ========================================================= */
+
+.sourcing-row {
+  cursor: pointer;
+  transition: background 0.15s ease;
+}
+
+.sourcing-row:hover {
+  background: var(--surface);
+}
+
+.sourcing-row td {
+  vertical-align: middle;
+}
+
+.sourcing-row td:first-child {
+  min-width: 150px;
+}
+
+.sourcing-row td:first-child b {
+  color: var(--text);
+  font-weight: 600;
+}
+
+.sourcing-row td:nth-child(2) {
+  width: 70px;
+  font-family: "DM Mono", monospace;
+}
+
+.sourcing-row td:nth-child(3) {
+  min-width: 140px;
+  color: var(--muted);
+}
+
+.sourcing-row td:nth-child(4) {
+  min-width: 100px;
+}
+
+.sourcing-row td:last-child {
+  max-width: 220px;
+  color: var(--muted);
+  font-size: 12px;
+}
+
+/* =========================================================
+   SOURCING STATUS / RISK
+   ========================================================= */
+
+.status-normal {
+  background: rgba(94, 156, 114, 0.14);
+  color: #79c494;
+  border-color: rgba(94, 156, 114, 0.25);
+}
+
+.status-watch {
+  background: rgba(196, 157, 55, 0.14);
+  color: #c9a94a;
+  border-color: rgba(196, 157, 55, 0.25);
+}
+
+.status-critical {
+  background: rgba(190, 72, 84, 0.14);
+  color: #e27b86;
+  border-color: rgba(190, 72, 84, 0.25);
+}
+
+.status-looking {
+  color: var(--muted);
+}
+
+.status-contacted {
+  color: var(--purple2);
+}
+
+.status-confirmed {
+  color: var(--green);
+}
+
+.status-on-process {
+  color: var(--yellow);
+}
+
+.status-ready {
+  color: var(--green);
+}
+
+.status-arrived {
+  color: var(--green);
+}
+
+.status-cancelled {
+  color: var(--red);
+}
+
+/* =========================================================
+   SOURCING DETAIL
+   ========================================================= */
+
+.sourcing-detail {
+  display: grid;
+  gap: 18px;
+}
+
+.sourcing-summary {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 20px;
+  padding: 18px;
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  background: var(--surface);
+}
+
+.sourcing-summary-main h2 {
+  margin: 4px 0 6px;
+}
+
+.sourcing-summary-status {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+}
+
+.sourcing-info-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 10px;
+}
+
+.sourcing-info {
+  padding: 14px;
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  background: var(--card);
+}
+
+.sourcing-info .eyebrow {
+  display: block;
+  margin-bottom: 6px;
+}
+
+.sourcing-info b {
+  font-size: 14px;
+}
+
+.sourcing-last-update,
+.sourcing-notes {
+  padding: 14px;
+  border-left: 2px solid var(--purple);
+  background: var(--surface);
+}
+
+.sourcing-last-update p,
+.sourcing-notes p {
+  margin: 6px 0 0;
+  line-height: 1.5;
+  color: var(--text);
+}
+
+.sourcing-history {
+  border-top: 1px solid var(--border);
+  padding-top: 18px;
+}
+
+.sourcing-history-head {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 12px;
+}
+
+.sourcing-history-head h3 {
+  margin: 3px 0 0;
+}
+
+/* =========================================================
+   SOURCING TIMELINE
+   ========================================================= */
+
+.sourcing-timeline {
+  display: grid;
+  gap: 10px;
+  margin-top: 14px;
+}
+
+.sourcing-update {
+  padding: 12px 14px;
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  background: var(--surface);
+}
+
+.sourcing-update-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  margin-bottom: 6px;
+}
+
+.sourcing-update-head b {
+  font-size: 13px;
+  color: var(--purple2);
+}
+
+.sourcing-update p {
+  margin: 0 0 5px;
+  line-height: 1.5;
+  color: var(--text);
+  font-size: 14px;
+}
+
+.sourcing-update small {
+  display: block;
+  font-size: 11px;
+}
+
+/* =========================================================
+   FORM
+   ========================================================= */
+
+.form {
+  gap: 14px;
+}
+
+.form label {
+  gap: 7px;
+}
+
+.form label > input,
+.form label > select,
+.form label > textarea {
+  margin-top: 0;
+}
+
+.form-section {
+  display: grid;
+  gap: 12px;
+  padding: 14px;
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  background: var(--surface);
+}
+
+.form-section-title {
+  margin: 0;
+  font-size: 11px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--muted);
+}
+
+.form-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 12px;
+}
+
+/* =========================================================
+   DIALOG / MODAL
+   ========================================================= */
+
 dialog {
+  width: min(600px, calc(100vw - 24px));
+  max-width: calc(100vw - 24px);
+  max-height: calc(100dvh - 24px);
+
+  margin: auto;
+  padding: 0;
+
   border: 0;
   background: transparent;
-  padding: 0;
+
+  overflow: hidden;
 }
+
 dialog::backdrop {
   background: #000b;
   backdrop-filter: blur(5px);
 }
+
 .dialog-card {
-  width: min(600px, calc(100vw - 24px));
+  width: 100%;
+  max-width: 100%;
+  max-height: calc(100dvh - 24px);
+
   padding: 24px;
+
   background: #111;
   border: 1px solid var(--border);
   border-radius: 18px;
   box-shadow: 0 30px 100px #000;
+
+  overflow-x: hidden;
+  overflow-y: auto;
 }
+
 .dialog-head {
   display: flex;
   justify-content: space-between;
-  align-items: flex-start;
+  align-items: center;
+  gap: 15px;
 }
+
+#dialogBody {
+  margin-top: 22px;
+}
+
 .dialog-head h2 {
   margin: 0;
 }
+
+.dialog-card h2,
+.dialog-card h3,
+.dialog-card h4,
+.dialog-card label,
+.dialog-card p,
+.dialog-card span,
+.dialog-card strong,
+.dialog-card b,
+.dialog-card small {
+  color: var(--text);
+}
+
+.dialog-card .muted {
+  color: var(--muted);
+}
+
+.dialog-card .eyebrow {
+  color: var(--purple2);
+}
+
+.dialog-card input,
+.dialog-card select,
+.dialog-card textarea {
+  color: var(--text);
+  background: #111214;
+}
+
 .actions {
   display: flex;
   justify-content: flex-end;
   gap: 9px;
   margin-top: 4px;
 }
+
+/* =========================================================
+   TOAST
+   ========================================================= */
+
 #toast {
   position: fixed;
   left: 50%;
@@ -476,112 +1164,23 @@ dialog::backdrop {
   pointer-events: none;
   font-size: 13px;
 }
+
 #toast.show {
   opacity: 1;
   transform: translate(-50%, 0);
 }
+
 .no-scroll {
   overflow: hidden !important;
 }
 
 /* =========================================================
-   DESKTOP STATUS + MODAL FIXES
-   Keep the mobile UI untouched.
+   TABLET / MOBILE NAV
    ========================================================= */
-@media (min-width: 561px) {
-  /* Low stock: warning for remaining stock, red for out of stock. */
-  .mini-warning span {
-    color: var(--yellow);
-  }
 
-  .mini-danger span {
-    color: #e27b7b;
-  }
-
-  .mini-danger b {
-    color: #f0b1b1;
-  }
-
-  /* Inventory availability. */
-  .pill.available {
-    background: rgba(94, 156, 114, 0.16);
-    color: #8bd0a0;
-  }
-
-  .pill.unavailable {
-    background: rgba(100, 130, 170, 0.16);
-    color: #9bb7df;
-  }
-
-  /* Order status. */
-  .order-status {
-    display: inline-flex;
-    align-items: center;
-    gap: 6px;
-    flex: 0 0 auto;
-    padding: 7px 10px;
-    border: 1px solid transparent;
-    border-radius: 999px;
-    font-size: 11px;
-    font-weight: 600;
-    white-space: nowrap;
-  }
-
-  .order-status.status-pending {
-    background: rgba(139, 111, 174, 0.16);
-    color: #c3add8;
-    border-color: rgba(139, 111, 174, 0.28);
-  }
-
-  .order-status.status-confirmed {
-    background: rgba(139, 111, 174, 0.18);
-    color: #c8b2dd;
-    border-color: rgba(139, 111, 174, 0.3);
-  }
-
-  .order-status.status-shipped {
-    background: rgba(105, 135, 185, 0.16);
-    color: #9fb8df;
-    border-color: rgba(105, 135, 185, 0.28);
-  }
-
-  .order-status.status-delivered {
-    background: rgba(94, 156, 114, 0.16);
-    color: #8bd0a0;
-    border-color: rgba(94, 156, 114, 0.28);
-  }
-
-  .order-status.status-cancelled,
-  .order-status.status-returned {
-    background: rgba(201, 92, 92, 0.14);
-    color: #df8585;
-    border-color: rgba(201, 92, 92, 0.28);
-  }
-
-  /* Modal/form text. */
-  .dialog-card,
-  .dialog-card h2,
-  .dialog-card h3,
-  .dialog-card h4,
-  .dialog-card label,
-  .dialog-card p,
-  .dialog-card span,
-  .dialog-card strong,
-  .dialog-card b,
-  .dialog-card small {
-    color: var(--text);
-  }
-
-  .dialog-card .muted,
-  .dialog-card .eyebrow {
-    color: var(--muted);
-  }
-
-  .dialog-card input,
-  .dialog-card select,
-  .dialog-card textarea {
-    color: var(--text);
-    background: #111214;
+@media (max-width: 1000px) {
+  .grid2 {
+    grid-template-columns: 1fr;
   }
 }
 
@@ -606,34 +1205,43 @@ dialog::backdrop {
     box-shadow: 18px 0 45px #0008;
     z-index: 20;
   }
+
   .sidebar.open {
     left: 0;
   }
+
   .brand {
     padding: 4px 10px 26px;
   }
+
   .brand img {
     width: 42px;
     height: 42px;
   }
+
   .brand div {
     display: block;
   }
+
   .sidebar nav {
     display: grid;
     overflow: visible;
     gap: 5px;
   }
+
   .nav {
     width: 100%;
     white-space: normal;
   }
+
   .owner {
     display: block;
     margin-top: 24px;
     flex: 0 0 auto;
   }
+
   .nav-backdrop {
+    display: block;
     position: fixed;
     inset: 0;
     background: #0009;
@@ -643,78 +1251,30 @@ dialog::backdrop {
     transition: opacity 0.2s ease;
     z-index: 15;
   }
+
   .nav-backdrop.open {
     opacity: 1;
     pointer-events: auto;
   }
+
   .main {
     margin-left: 0;
     padding: 30px 18px 50px;
   }
+
   .mobile-menu {
     display: inline-flex;
   }
+
   .stats {
     grid-template-columns: repeat(2, 1fr);
-  }
-  .grid2 {
-    grid-template-columns: 1fr;
-  }
-}
-@media (max-width: 560px) {
-  .main {
-    padding: 24px 11px 50px;
-  }
-  .main header {
-    margin-bottom: 24px;
-  }
-  .main h1 {
-    font-size: 26px;
-  }
-  .header-actions {
-    gap: 7px;
-  }
-  .refresh,
-  .mobile-menu {
-    width: 42px;
-    height: 42px;
-  }
-  .refresh {
-    font-size: 21px;
-  }
-  .stats {
-    gap: 8px;
-  }
-  .stats article {
-    padding: 14px;
-    min-height: 105px;
-  }
-  .stats b {
-    font-size: 27px;
-  }
-  .toolbar {
-    flex-direction: column;
-  }
-  .toolbar input {
-    max-width: none;
-  }
-  .toolbar .primary {
-    width: 100%;
-  }
-  .auth-card {
-    padding: 28px;
-  }
-  .dialog-card {
-    padding: 18px;
   }
 }
 
 /* =========================================================
-   MOBILE RESPONSIVE OVERRIDES
-   - No horizontal scrolling for data tables.
-   - Tables become vertical cards on small screens.
-   - Existing hamburger navigation is kept.
+   MOBILE
    ========================================================= */
+
 @media (max-width: 560px) {
   html,
   body {
@@ -734,11 +1294,21 @@ dialog::backdrop {
   }
 
   .main {
+    padding: 24px 11px 50px;
     overflow-x: hidden;
+  }
+
+  .main header {
+    margin-bottom: 24px;
+  }
+
+  .main h1 {
+    font-size: 26px;
   }
 
   .header-actions {
     align-items: center;
+    gap: 7px;
   }
 
   .refresh,
@@ -758,7 +1328,49 @@ dialog::backdrop {
     font-size: 21px;
   }
 
-  /* Data tables become stacked cards instead of horizontal tables. */
+  /* Stats */
+
+  .stats {
+    gap: 8px;
+  }
+
+  .stats article {
+    padding: 14px;
+    min-height: 105px;
+  }
+
+  .stats b {
+    font-size: 27px;
+  }
+
+  /* Toolbar */
+
+  .toolbar {
+    flex-direction: column;
+  }
+
+  .toolbar input {
+    max-width: none;
+  }
+
+  .toolbar .primary {
+    width: 100%;
+  }
+
+  /* Auth */
+
+  .auth-card {
+    padding: 28px;
+  }
+
+  /* Overview */
+
+  .grid2 {
+    grid-template-columns: 1fr;
+  }
+
+  /* Table container */
+
   .table {
     overflow: visible;
     width: 100%;
@@ -821,61 +1433,289 @@ dialog::backdrop {
     text-align: left;
   }
 
-  /* Inventory */
+  /* =======================================================
+     INVENTORY MOBILE LABELS
+     ======================================================= */
+
   #inventoryRows td:nth-child(1)::before {
     content: "Species";
   }
+
   #inventoryRows td:nth-child(2)::before {
     content: "Qty";
   }
+
   #inventoryRows td:nth-child(3)::before {
     content: "Availability";
   }
+
   #inventoryRows td:nth-child(4)::before {
     content: "Notes";
   }
 
-  /* Incoming stock */
+  /* =======================================================
+     INCOMING MOBILE LABELS
+     ======================================================= */
+
   #incomingRows td:nth-child(1)::before {
     content: "Species";
   }
+
   #incomingRows td:nth-child(2)::before {
     content: "Qty";
   }
+
   #incomingRows td:nth-child(3)::before {
     content: "Status";
   }
+
   #incomingRows td:nth-child(4)::before {
     content: "No. Resi";
   }
+
   #incomingRows td:nth-child(5)::before {
     content: "Payment";
   }
+
   #incomingRows td:nth-child(6)::before {
     content: "ETA";
   }
+
   #incomingRows td:nth-child(7)::before {
     content: "Last Update";
   }
 
-  /* Stock movement */
+  /* =======================================================
+   SOURCING MOBILE — CARD LAYOUT
+   ======================================================= */
+
+  #sourcingRows {
+    display: grid;
+    gap: 12px;
+    padding: 10px;
+  }
+
+  #sourcingRows tr.sourcing-row {
+    display: block;
+    width: 100%;
+    padding: 0;
+    background: #111;
+    border: 1px solid var(--border);
+    border-radius: 13px;
+    overflow: hidden;
+  }
+
+  #sourcingRows tr.sourcing-row td {
+    display: grid;
+    grid-template-columns: 82px minmax(0, 1fr);
+    align-items: center;
+    gap: 12px;
+
+    width: 100%;
+    min-width: 0;
+    min-height: 42px;
+
+    padding: 10px 13px;
+
+    text-align: right;
+    white-space: normal;
+    overflow-wrap: anywhere;
+
+    border-bottom: 1px solid #242226;
+  }
+
+  #sourcingRows tr.sourcing-row td:last-child {
+    border-bottom: 0;
+  }
+
+  /* Label */
+
+  #sourcingRows tr.sourcing-row td::before {
+    color: var(--muted);
+
+    font:
+      500 9px "DM Mono",
+      monospace;
+
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    text-align: left;
+  }
+
+  /* =======================================================
+   SPECIES
+   ======================================================= */
+
+  #sourcingRows tr.sourcing-row td:nth-child(1) {
+    display: block;
+    padding: 15px 14px 13px;
+
+    background: #151515;
+    border-bottom: 1px solid var(--border);
+
+    text-align: left;
+  }
+
+  #sourcingRows tr.sourcing-row td:nth-child(1)::before {
+    display: block;
+    content: "SPECIES";
+
+    margin-bottom: 5px;
+  }
+
+  #sourcingRows tr.sourcing-row td:nth-child(1) b {
+    display: block;
+
+    color: var(--text);
+    font-size: 14px;
+    font-weight: 600;
+    line-height: 1.35;
+  }
+
+  /* =======================================================
+   QTY
+   ======================================================= */
+
+  #sourcingRows tr.sourcing-row td:nth-child(2) {
+    grid-template-columns: 82px minmax(0, 1fr);
+
+    color: var(--purple2);
+
+    font:
+      500 13px "DM Mono",
+      monospace;
+  }
+
+  #sourcingRows tr.sourcing-row td:nth-child(2)::before {
+    content: "QTY";
+  }
+
+  /* =======================================================
+   SOURCE
+   ======================================================= */
+
+  #sourcingRows tr.sourcing-row td:nth-child(3)::before {
+    content: "SOURCE";
+  }
+
+  #sourcingRows tr.sourcing-row td:nth-child(3) {
+    color: var(--muted);
+  }
+
+  /* =======================================================
+   PIC
+   ======================================================= */
+
+  #sourcingRows tr.sourcing-row td:nth-child(4)::before {
+    content: "PIC";
+  }
+
+  #sourcingRows tr.sourcing-row td:nth-child(4) {
+    color: var(--text);
+  }
+
+  /* =======================================================
+   RISK
+   ======================================================= */
+
+  #sourcingRows tr.sourcing-row td:nth-child(5)::before {
+    content: "RISK";
+  }
+
+  /* =======================================================
+   STATUS
+   ======================================================= */
+
+  #sourcingRows tr.sourcing-row td:nth-child(6)::before {
+    content: "STATUS";
+  }
+
+  /* =======================================================
+   TARGET
+   ======================================================= */
+
+  #sourcingRows tr.sourcing-row td:nth-child(7)::before {
+    content: "TARGET";
+  }
+
+  /* =======================================================
+   LAST UPDATE
+   ======================================================= */
+
+  #sourcingRows tr.sourcing-row td:nth-child(8) {
+    display: block;
+
+    padding: 13px 14px 15px;
+
+    background: #0d0d0d;
+
+    text-align: left;
+    line-height: 1.45;
+  }
+
+  #sourcingRows tr.sourcing-row td:nth-child(8)::before {
+    display: block;
+    content: "LAST UPDATE";
+
+    margin-bottom: 6px;
+  }
+
+  #sourcingRows tr.sourcing-row td:nth-child(8) {
+    color: var(--text);
+    font-size: 12px;
+  }
+
+  /* =======================================================
+   BADGES
+   ======================================================= */
+
+  #sourcingRows tr.sourcing-row .pill {
+    justify-self: end;
+
+    width: fit-content;
+    max-width: 100%;
+
+    text-align: center;
+    white-space: nowrap;
+  }
+
+  /* =======================================================
+   LONG TEXT SAFETY
+   ======================================================= */
+
+  #sourcingRows tr.sourcing-row td:nth-child(3),
+  #sourcingRows tr.sourcing-row td:nth-child(4),
+  #sourcingRows tr.sourcing-row td:nth-child(8) {
+    overflow-wrap: anywhere;
+    word-break: break-word;
+  }
+
+  /* =======================================================
+     STOCK MOVEMENT MOBILE LABELS
+     ======================================================= */
+
   #movementRows td:nth-child(1)::before {
     content: "Species";
   }
+
   #movementRows td:nth-child(2)::before {
     content: "Change";
   }
+
   #movementRows td:nth-child(3)::before {
     content: "Type";
   }
+
   #movementRows td:nth-child(4)::before {
     content: "Reference";
   }
+
   #movementRows td:nth-child(5)::before {
     content: "Date";
   }
 
-  /* Empty table rows should remain simple, not become fake cards. */
+  /* Empty states */
+
   .table tbody tr:has(.empty) {
     display: block;
     padding: 0;
@@ -894,105 +1734,61 @@ dialog::backdrop {
     display: none;
   }
 
-  /* Keep long tracking numbers readable without creating page overflow. */
+  /* Long tracking number */
+
   #incomingRows td:nth-child(4) {
     word-break: break-all;
   }
 
-  /* Status badges */
-  .pill.available {
-    background: rgba(94, 156, 114, 0.16);
-    color: #8bd0a0;
+  /* =======================================================
+     ORDER MOBILE
+     ======================================================= */
+
+  .order {
+    padding: 16px;
   }
 
-  .pill.unavailable {
-    background: rgba(100, 130, 170, 0.16);
-    color: #9bb7df;
+  .order-head {
+    align-items: flex-start;
   }
 
-  .pill.paid {
-    background: rgba(94, 156, 114, 0.16);
-    color: #8bd0a0;
-  }
-
-  .pill.unpaid {
-    background: rgba(214, 164, 71, 0.14);
-    color: #dfb85d;
-  }
-
-  /* Order status styling */
   .order-status {
-    display: inline-flex;
-    align-items: center;
-    gap: 6px;
     flex: 0 0 auto;
-    padding: 7px 10px;
-    border: 1px solid transparent;
-    border-radius: 999px;
-    font-size: 11px;
-    font-weight: 600;
-    white-space: nowrap;
   }
 
-  .order-status.status-pending {
-    background: rgba(139, 111, 174, 0.16);
-    color: #c3add8;
-    border-color: rgba(139, 111, 174, 0.28);
+  /* =======================================================
+     SOURCING MOBILE
+     ======================================================= */
+
+  .sourcing-summary {
+    flex-direction: column;
   }
 
-  .order-status.status-confirmed {
-    background: rgba(139, 111, 174, 0.18);
-    color: #c8b2dd;
-    border-color: rgba(139, 111, 174, 0.3);
+  .sourcing-summary-status {
+    justify-content: flex-start;
   }
 
-  .order-status.status-shipped {
-    background: rgba(105, 135, 185, 0.16);
-    color: #9fb8df;
-    border-color: rgba(105, 135, 185, 0.28);
+  .sourcing-info-grid {
+    grid-template-columns: 1fr;
   }
 
-  .order-status.status-delivered {
-    background: rgba(94, 156, 114, 0.16);
-    color: #8bd0a0;
-    border-color: rgba(94, 156, 114, 0.28);
+  .sourcing-history-head {
+    align-items: flex-start;
+    flex-direction: column;
   }
 
-  .order-status.status-cancelled,
-  .order-status.status-returned {
-    background: rgba(201, 92, 92, 0.14);
-    color: #df8585;
-    border-color: rgba(201, 92, 92, 0.28);
+  /* =======================================================
+     FORM MOBILE
+     ======================================================= */
+
+  .form-grid {
+    grid-template-columns: 1fr;
   }
 
-  /* Low-stock warning: red only when actually out of stock. */
-  .mini-warning span {
-    color: var(--yellow);
-  }
+  /* =======================================================
+     MODAL MOBILE
+     ======================================================= */
 
-  .mini-danger span {
-    color: #e27b7b;
-  }
-
-  .mini-danger b {
-    color: #f0b1b1;
-  }
-
-  /* Modal text must stay readable; previous black heading issue is prevented. */
-  .dialog-card,
-  .dialog-card h2,
-  .dialog-card label,
-  .dialog-card p,
-  .dialog-card strong,
-  .dialog-card b {
-    color: var(--text);
-  }
-
-  .dialog-card .muted {
-    color: var(--muted);
-  }
-
-  /* Mobile modal: never create horizontal page/modal scrolling. */
   dialog {
     width: calc(100vw - 20px);
     max-width: calc(100vw - 20px);
@@ -1029,261 +1825,33 @@ dialog::backdrop {
     flex-wrap: wrap;
   }
 
-  /* Drawer stays fixed; the page behind it is locked by JS while open. */
+  /* Drawer */
+
   .sidebar {
     overflow: hidden;
     overscroll-behavior: none;
   }
 }
 
-@media (min-width: 769px) {
-  /* =======================================================
-     INCOMING STOCK
-     ======================================================= */
+/* =======================================================
+   OVERVIEW DESKTOP — STOCK & SOURCING
+   ======================================================= */
 
-  /* Semua badge status di Incoming */
-  #incomingRows .status,
-  #incomingRows .badge,
-  #incomingRows .status-badge {
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    text-align: center;
-    vertical-align: middle;
-    line-height: 1;
-    white-space: nowrap;
-    box-sizing: border-box;
+@media (min-width: 1001px) {
+  #overview .grid2 {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 18px;
+    align-items: start;
   }
 
-  /* ---------- IN PROGRESS ---------- */
-
-  #incomingRows .status.in-progress,
-  #incomingRows .badge.in-progress,
-  #incomingRows .status-badge.in-progress {
-    background: rgba(196, 157, 55, 0.14);
-    color: #c9a94a;
-    border-color: rgba(196, 157, 55, 0.25);
+  #overview .grid2 .panel:first-child {
+    grid-column: 1 / -1;
   }
 
-  /* ---------- SHIPPED ---------- */
-
-  #incomingRows .status.shipped,
-  #incomingRows .badge.shipped,
-  #incomingRows .status-badge.shipped {
-    background: rgba(145, 113, 190, 0.14);
-    color: #a98bd4;
-    border-color: rgba(145, 113, 190, 0.25);
+  #overview .grid2 .panel:nth-child(2),
+  #overview .grid2 .panel:nth-child(3) {
+    min-width: 0;
   }
-
-  /* ---------- ON PROCESS ---------- */
-
-  #incomingRows .status.on-process,
-  #incomingRows .badge.on-process,
-  #incomingRows .status-badge.on-process {
-    background: rgba(91, 130, 174, 0.14);
-    color: #80a9d2;
-    border-color: rgba(91, 130, 174, 0.25);
-  }
-
-  /* ---------- REJECTED ---------- */
-
-  #incomingRows .status.rejected,
-  #incomingRows .badge.rejected,
-  #incomingRows .status-badge.rejected {
-    background: rgba(190, 72, 84, 0.14);
-    color: #e27b86;
-    border-color: rgba(190, 72, 84, 0.25);
-  }
-
-  /* ---------- ARRIVED ---------- */
-
-  #incomingRows .status.arrived,
-  #incomingRows .badge.arrived,
-  #incomingRows .status-badge.arrived {
-    background: rgba(68, 155, 103, 0.14);
-    color: #79c494;
-    border-color: rgba(68, 155, 103, 0.25);
-  }
-
-  /* =======================================================
-     PAID / UNPAID
-     ======================================================= */
-
-  #incomingRows .paid,
-  #incomingRows .payment-status.paid,
-  #incomingRows .payment.paid {
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-
-    background: rgba(68, 155, 103, 0.14);
-    color: #79c494;
-    border-color: rgba(68, 155, 103, 0.25);
-
-    text-align: center;
-    line-height: 1;
-    white-space: nowrap;
-  }
-
-  #incomingRows .unpaid,
-  #incomingRows .payment-status.unpaid,
-  #incomingRows .payment.unpaid {
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-
-    background: rgba(196, 157, 55, 0.14);
-    color: #c9a94a;
-    border-color: rgba(196, 157, 55, 0.25);
-
-    text-align: center;
-    line-height: 1;
-    white-space: nowrap;
-  }
-
-  /* =======================================================
-     ORDERS
-     ======================================================= */
-
-  /* Paksa status order benar-benar center */
-  #orderRows .status,
-  #orderRows .order-status,
-  #orderRows .status-badge,
-  #orderRows .badge {
-    display: inline-flex;
-
-    align-items: center;
-    justify-content: center;
-
-    text-align: center;
-    vertical-align: middle;
-
-    line-height: 1;
-    white-space: nowrap;
-
-    box-sizing: border-box;
-
-    min-width: 82px;
-    min-height: 30px;
-
-    padding: 7px 12px;
-  }
-
-  /* ---------- PENDING ---------- */
-
-  #orderRows .status.pending,
-  #orderRows .order-status.pending,
-  #orderRows .badge.pending {
-    background: rgba(196, 157, 55, 0.14);
-    color: #c9a94a;
-    border-color: rgba(196, 157, 55, 0.25);
-  }
-
-  /* ---------- CONFIRMED ---------- */
-
-  #orderRows .status.confirmed,
-  #orderRows .order-status.confirmed,
-  #orderRows .badge.confirmed {
-    background: rgba(145, 113, 190, 0.14);
-    color: #a98bd4;
-    border-color: rgba(145, 113, 190, 0.25);
-  }
-
-  /* ---------- SHIPPED ---------- */
-
-  #orderRows .status.shipped,
-  #orderRows .order-status.shipped,
-  #orderRows .badge.shipped {
-    background: rgba(91, 130, 174, 0.14);
-    color: #80a9d2;
-    border-color: rgba(91, 130, 174, 0.25);
-  }
-
-  /* ---------- DELIVERED ---------- */
-
-  #orderRows .status.delivered,
-  #orderRows .order-status.delivered,
-  #orderRows .badge.delivered {
-    background: rgba(68, 155, 103, 0.14);
-    color: #79c494;
-    border-color: rgba(68, 155, 103, 0.25);
-  }
-
-  /* ---------- CANCELLED ---------- */
-
-  #orderRows .status.cancelled,
-  #orderRows .order-status.cancelled,
-  #orderRows .badge.cancelled {
-    background: rgba(190, 72, 84, 0.14);
-    color: #e27b86;
-    border-color: rgba(190, 72, 84, 0.25);
-  }
-
-  /* ---------- RETURNED ---------- */
-
-  #orderRows .status.returned,
-  #orderRows .order-status.returned,
-  #orderRows .badge.returned {
-    background: rgba(145, 113, 190, 0.14);
-    color: #a98bd4;
-    border-color: rgba(145, 113, 190, 0.25);
-  }
-}
-
-.sourcing-timeline {
-  display: grid;
-  gap: 10px;
-  margin-top: 14px;
-}
-
-.sourcing-update {
-  padding: 12px 14px;
-  border: 1px solid var(--border);
-  border-radius: 10px;
-  background: var(--surface);
-}
-
-.sourcing-update-head {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 12px;
-  margin-bottom: 6px;
-}
-
-.sourcing-update-head b {
-  font-size: 13px;
-  color: var(--purple2);
-}
-
-.sourcing-update p {
-  margin: 0 0 5px;
-  line-height: 1.5;
-  color: var(--text);
-  font-size: 14px;
-}
-
-.sourcing-update small {
-  display: block;
-  font-size: 11px;
-}
-
-.sourcing-row {
-  cursor: pointer;
-}
-
-.sourcing-row:hover {
-  background: var(--surface);
-}
-
-.status-normal {
-  color: var(--green);
-}
-
-.status-watch {
-  color: var(--yellow);
-}
-
-.status-critical {
-  color: var(--red);
+  
 }
