@@ -196,10 +196,13 @@ function renderSourcing() {
         .map(
           (x) => `
             <tr class="sourcing-row" data-sourcing-id="${x.id}">
-              <td><b>${esc(x.species)}</b></td>
-              <td>${x.quantity}</td>
-              <td>${esc(x.source_name || "—")}</td>
               <td>${esc(x.pic || "—")}</td>
+              <td>
+                <span class="pill status-${statusClass(x.risk)}">
+                  <span class="pill-dot"></span>
+                  ${esc(x.risk || "Normal")}
+                </span>
+              </td>
               <td>
                 <span class="pill status-${statusClass(x.status)}">
                   <span class="pill-dot"></span>
@@ -212,7 +215,7 @@ function renderSourcing() {
           `,
         )
         .join("")
-    : `<tr><td colspan="7" class="empty">No sourcing records.</td></tr>`;
+    : `<tr><td colspan="8" class="empty">No sourcing records.</td></tr>`;
 }
 function openSourcing(id) {
   const x = sourcing.find((item) => item.id === id);
@@ -225,6 +228,15 @@ function openSourcing(id) {
     "SOURCING DETAIL",
     `
       <div class="form">
+
+        <div>
+          <p class="eyebrow">RISK</p>
+          <span class="pill status-${statusClass(x.risk)}">
+            <span class="pill-dot"></span>
+            ${esc(x.risk || "Normal")}
+          </span>
+        </div>
+        
         <div>
           <p class="eyebrow">STATUS</p>
           <span class="pill status-${statusClass(x.status)}">
@@ -327,6 +339,16 @@ function addSourcingUpdate(id) {
     "SOURCING UPDATE",
     `
       <form class="form">
+
+        <label>
+          Risk
+          <select name="risk">
+            <option>Normal</option>
+            <option>Watch</option>
+            <option>Critical</option>
+          </select>
+        </label>
+
         <label>
           Status
           <select name="status">
@@ -369,6 +391,7 @@ function addSourcingUpdate(id) {
       </form>
     `,
     async (f) => {
+      const risk = f.get("risk");
       const status = f.get("status");
       const updateText = f.get("update_text").trim();
       const createdBy = f.get("created_by").trim();
@@ -385,6 +408,7 @@ function addSourcingUpdate(id) {
       const { error: sourcingError } = await db
         .from("sourcing")
         .update({
+          risk,
           status,
           last_update: updateText,
           updated_at: new Date().toISOString(),
@@ -503,6 +527,15 @@ function addSourcing() {
       </label>
 
       <label>
+        Risk
+        <select name="risk">
+          <option>Normal</option>
+          <option>Watch</option>
+          <option>Critical</option>
+        </select>
+      </label>
+
+      <label>
         Status
         <select name="status">
           <option>Looking</option>
@@ -557,6 +590,7 @@ function addSourcing() {
         source_name: f.get("source_name") || null,
         source_contact: f.get("source_contact") || null,
         pic: f.get("pic") || null,
+        risk: f.get("risk"),
         status: f.get("status"),
         target_date: f.get("target_date") || null,
         eta: f.get("eta") || null,

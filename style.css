@@ -1275,3 +1275,15 @@ dialog::backdrop {
 .sourcing-row:hover {
   background: var(--surface);
 }
+
+.status-normal {
+  color: var(--green);
+}
+
+.status-watch {
+  color: var(--yellow);
+}
+
+.status-critical {
+  color: var(--red);
+}
