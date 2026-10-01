@@ -41,7 +41,8 @@ let user = null,
   buyers = [],
   orders = [],
   items = [],
-  movements = [];
+  movements = [],
+  sourcing = [];
 
 function toast(x) {
   const t = $("#toast");
@@ -64,13 +65,14 @@ async function load() {
       .from("inventory_movements")
       .select("*")
       .order("created_at", { ascending: false }),
+    db.from("sourcing").select("*").order("created_at", { ascending: false }),
   ]);
   r.forEach((x) => {
     if (x.error) throw x.error;
   });
   [inventory, incoming, buyers, orders, items, movements] = r.map(
     (x) => x.data || [],
-  );
+  );  
   render();
 }
 function render() {
@@ -197,14 +199,12 @@ function addInventory() {
     `<form class="form"><label>Species<input name="species" required></label><label>Quantity<input name="quantity" type="number" min="0" value="0" required></label><label>Notes<textarea name="notes"></textarea></label><div class="actions"><button type="button" class="ghost" data-close>Cancel</button><button class="primary">Save</button></div></form>`,
     async (f) => {
       const q = Number(f.get("quantity"));
-      const { error } = await db
-        .from("inventory")
-        .insert({
-          species: f.get("species").trim(),
-          quantity: q,
-          availability: q > 0 ? "Available" : "Unavailable",
-          notes: f.get("notes") || null,
-        });
+      const { error } = await db.from("inventory").insert({
+        species: f.get("species").trim(),
+        quantity: q,
+        availability: q > 0 ? "Available" : "Unavailable",
+        notes: f.get("notes") || null,
+      });
       if (error) throw error;
       closeDialog();
       toast("Species added ✓");
@@ -218,16 +218,14 @@ function addIncoming() {
     "INCOMING STOCK",
     `<form class="form"><label>Species<input name="species" required></label><label>Qty<input name="qty" type="number" min="1" required></label><label>Status<select name="status"><option>In progress</option><option>Shipped</option><option>On Process</option><option>Rejected</option><option>Arrived</option></select></label><label>No. Resi<input name="receipt_number"></label><label>Paid / Unpaid<select name="payment_status"><option>Unpaid</option><option>Paid</option></select></label><label>ETA<input name="eta" type="date"></label><div class="actions"><button type="button" class="ghost" data-close>Cancel</button><button class="primary">Save</button></div></form>`,
     async (f) => {
-      const { error } = await db
-        .from("incoming_stock")
-        .insert({
-          species: f.get("species").trim(),
-          qty: Number(f.get("qty")),
-          status: f.get("status"),
-          receipt_number: f.get("receipt_number") || null,
-          payment_status: f.get("payment_status"),
-          eta: f.get("eta") || null,
-        });
+      const { error } = await db.from("incoming_stock").insert({
+        species: f.get("species").trim(),
+        qty: Number(f.get("qty")),
+        status: f.get("status"),
+        receipt_number: f.get("receipt_number") || null,
+        payment_status: f.get("payment_status"),
+        eta: f.get("eta") || null,
+      });
       if (error) throw error;
       closeDialog();
       toast("Incoming stock added ✓");
@@ -271,14 +269,12 @@ function addOrder() {
         .select()
         .single();
       if (oe) throw oe;
-      const { error: ie } = await db
-        .from("order_items")
-        .insert({
-          order_id: o.id,
-          inventory_id: inv.id,
-          species: inv.species,
-          quantity: Number(f.get("quantity")),
-        });
+      const { error: ie } = await db.from("order_items").insert({
+        order_id: o.id,
+        inventory_id: inv.id,
+        species: inv.species,
+        quantity: Number(f.get("quantity")),
+      });
       if (ie) throw ie;
       closeDialog();
       toast(`Order #${o.order_number} created ✓`);
