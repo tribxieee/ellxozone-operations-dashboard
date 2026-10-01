@@ -267,9 +267,138 @@ function openSourcing(id) {
           <p class="eyebrow">NOTES</p>
           <p>${esc(x.notes || "—")}</p>
         </div>
+
+        <hr>
+
+        <div>
+          <div style="display:flex;justify-content:space-between;align-items:center;gap:12px;">
+            <div>
+              <p class="eyebrow">UPDATE HISTORY</p>
+              <h3>Timeline</h3>
+            </div>
+
+            <button
+              type="button"
+              class="primary"
+              data-add-sourcing-update="${x.id}"
+            >
+              + Add update
+            </button>
+          </div>
+
+          <div class="sourcing-timeline">
+            ${
+              updates.length
+                ? updates
+                    .map(
+                      (u) => `
+                        <div class="sourcing-update">
+                          <div class="sourcing-update-head">
+                            <b>${esc(u.status || "Update")}</b>
+                            <span class="muted">${fmt(u.created_at)}</span>
+                          </div>
+
+                          <p>${esc(u.update_text)}</p>
+
+                          ${
+                            u.created_by
+                              ? `<small class="muted">by ${esc(u.created_by)}</small>`
+                              : ""
+                          }
+                        </div>
+                      `,
+                    )
+                    .join("")
+                : `<p class="muted">No updates yet.</p>`
+            }
+          </div>
+        </div>
       </div>
     `,
     async () => {},
+  );
+}
+function addSourcingUpdate(id) {
+  const x = sourcing.find((item) => item.id === id);
+  if (!x) return;
+
+  dialog(
+    "Add sourcing update",
+    "SOURCING UPDATE",
+    `
+      <form class="form">
+        <label>
+          Status
+          <select name="status">
+            <option>Looking</option>
+            <option>Contacted</option>
+            <option>Confirmed</option>
+            <option>On Process</option>
+            <option>Ready</option>
+            <option>Arrived</option>
+            <option>Cancelled</option>
+          </select>
+        </label>
+
+        <label>
+          Update
+          <textarea
+            name="update_text"
+            placeholder="What happened?"
+            required
+          ></textarea>
+        </label>
+
+        <label>
+          Updated by
+          <input
+            name="created_by"
+            value="${esc(userDisplay())}"
+          >
+        </label>
+
+        <div class="actions">
+          <button type="button" class="ghost" data-close>
+            Cancel
+          </button>
+
+          <button class="primary">
+            Save update
+          </button>
+        </div>
+      </form>
+    `,
+    async (f) => {
+      const status = f.get("status");
+      const updateText = f.get("update_text").trim();
+      const createdBy = f.get("created_by").trim();
+
+      const { error: updateError } = await db.from("sourcing_updates").insert({
+        sourcing_id: id,
+        status,
+        update_text: updateText,
+        created_by: createdBy || null,
+      });
+
+      if (updateError) throw updateError;
+
+      const { error: sourcingError } = await db
+        .from("sourcing")
+        .update({
+          status,
+          last_update: updateText,
+          updated_at: new Date().toISOString(),
+        })
+        .eq("id", id);
+
+      if (sourcingError) throw sourcingError;
+
+      closeDialog();
+      toast("Sourcing updated ✓");
+
+      await load();
+      openSourcing(id);
+    },
   );
 }
 function renderMovements() {
@@ -601,11 +730,30 @@ function setup() {
     if (b) changeStatus(b.dataset.status);
   };
   $("#sourcingRows").onclick = (e) => {
+    const updateButton = e.target.closest("[data-add-sourcing-update]");
+
+    if (updateButton) {
+      addSourcingUpdate(updateButton.dataset.addSourcingUpdate);
+      return;
+    }
+
     const row = e.target.closest("[data-sourcing-id]");
-    if (row) openSourcing(row.dataset.sourcingId);
+
+    if (row) {
+      openSourcing(row.dataset.sourcingId);
+    }
   };
   $("#dialog").onclick = (e) => {
-    if (e.target.matches("[data-close]")) closeDialog();
+    if (e.target.matches("[data-close]")) {
+      closeDialog();
+      return;
+    }
+
+    const updateButton = e.target.closest("[data-add-sourcing-update]");
+
+    if (updateButton) {
+      addSourcingUpdate(updateButton.dataset.addSourcingUpdate);
+    }
   };
   db.auth.onAuthStateChange((_e, s) => {
     user = s?.user || null;
