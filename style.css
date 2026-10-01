@@ -1229,3 +1229,49 @@ dialog::backdrop {
     border-color: rgba(145, 113, 190, 0.25);
   }
 }
+
+.sourcing-timeline {
+  display: grid;
+  gap: 10px;
+  margin-top: 14px;
+}
+
+.sourcing-update {
+  padding: 12px 14px;
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  background: var(--surface);
+}
+
+.sourcing-update-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  margin-bottom: 6px;
+}
+
+.sourcing-update-head b {
+  font-size: 13px;
+  color: var(--purple2);
+}
+
+.sourcing-update p {
+  margin: 0 0 5px;
+  line-height: 1.5;
+  color: var(--text);
+  font-size: 14px;
+}
+
+.sourcing-update small {
+  display: block;
+  font-size: 11px;
+}
+
+.sourcing-row {
+  cursor: pointer;
+}
+
+.sourcing-row:hover {
+  background: var(--surface);
+}
