@@ -37,6 +37,7 @@
           <button class="nav" data-view="inventory">Inventory</button>
           <button class="nav" data-view="incoming">Incoming Stock</button>
           <button class="nav" data-view="orders">Orders</button>
+          <button class="nav" data-view="sourcing">Sourcing</button>
           <button class="nav" data-view="movements">Stock Movement</button>
         </nav>
         <div class="owner">
@@ -156,6 +157,33 @@
             /><button id="addOrder" class="primary">+ New order</button>
           </div>
           <div id="orderRows" class="orders"></div>
+        </section>
+
+        <section id="sourcing" class="view hidden">
+          <div class="toolbar">
+            <input
+              id="sourcingSearch"
+              placeholder="Search species / source..."
+            />
+            <button id="addSourcing" class="primary">+ New sourcing</button>
+          </div>
+
+          <div class="table">
+            <table>
+              <thead>
+                <tr>
+                  <th>Species</th>
+                  <th>Qty</th>
+                  <th>Source</th>
+                  <th>PIC</th>
+                  <th>Status</th>
+                  <th>Target</th>
+                  <th>Last Update</th>
+                </tr>
+              </thead>
+              <tbody id="sourcingRows"></tbody>
+            </table>
+          </div>
         </section>
 
         <section id="movements" class="view hidden">
