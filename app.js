@@ -42,7 +42,8 @@ let user = null,
   orders = [],
   items = [],
   movements = [],
-  sourcing = [];
+  sourcing = [],
+  sourcingUpdates = [];
 
 function toast(x) {
   const t = $("#toast");
@@ -66,13 +67,24 @@ async function load() {
       .select("*")
       .order("created_at", { ascending: false }),
     db.from("sourcing").select("*").order("created_at", { ascending: false }),
+    db
+      .from("sourcing_updates")
+      .select("*")
+      .order("created_at", { ascending: false }),
   ]);
   r.forEach((x) => {
     if (x.error) throw x.error;
   });
-  [inventory, incoming, buyers, orders, items, movements] = r.map(
-    (x) => x.data || [],
-  );
+  [
+    inventory,
+    incoming,
+    buyers,
+    orders,
+    items,
+    movements,
+    sourcing,
+    sourcingUpdates,
+  ] = r.map((x) => x.data || []);
   render();
 }
 function render() {
@@ -168,16 +180,22 @@ function renderSourcing() {
 
   const rows = sourcing.filter(
     (x) =>
-      String(x.species || "").toLowerCase().includes(q) ||
-      String(x.source_name || "").toLowerCase().includes(q) ||
-      String(x.pic || "").toLowerCase().includes(q),
+      String(x.species || "")
+        .toLowerCase()
+        .includes(q) ||
+      String(x.source_name || "")
+        .toLowerCase()
+        .includes(q) ||
+      String(x.pic || "")
+        .toLowerCase()
+        .includes(q),
   );
 
   $("#sourcingRows").innerHTML = rows.length
     ? rows
         .map(
           (x) => `
-            <tr>
+            <tr class="sourcing-row" data-sourcing-id="${x.id}">
               <td><b>${esc(x.species)}</b></td>
               <td>${x.quantity}</td>
               <td>${esc(x.source_name || "—")}</td>
@@ -195,6 +213,64 @@ function renderSourcing() {
         )
         .join("")
     : `<tr><td colspan="7" class="empty">No sourcing records.</td></tr>`;
+}
+function openSourcing(id) {
+  const x = sourcing.find((item) => item.id === id);
+  if (!x) return;
+
+  const updates = sourcingUpdates.filter((u) => u.sourcing_id === x.id);
+
+  dialog(
+    x.species,
+    "SOURCING DETAIL",
+    `
+      <div class="form">
+        <div>
+          <p class="eyebrow">STATUS</p>
+          <span class="pill status-${statusClass(x.status)}">
+            <span class="pill-dot"></span>
+            ${esc(x.status)}
+          </span>
+        </div>
+
+        <div>
+          <p class="eyebrow">SOURCE</p>
+          <p>${esc(x.source_name || "—")}</p>
+        </div>
+
+        <div>
+          <p class="eyebrow">PIC</p>
+          <p>${esc(x.pic || "—")}</p>
+        </div>
+
+        <div>
+          <p class="eyebrow">QUANTITY</p>
+          <p>${x.quantity}</p>
+        </div>
+
+        <div>
+          <p class="eyebrow">TARGET DATE</p>
+          <p>${fmt(x.target_date)}</p>
+        </div>
+
+        <div>
+          <p class="eyebrow">ETA</p>
+          <p>${fmt(x.eta)}</p>
+        </div>
+
+        <div>
+          <p class="eyebrow">LAST UPDATE</p>
+          <p>${esc(x.last_update || "—")}</p>
+        </div>
+
+        <div>
+          <p class="eyebrow">NOTES</p>
+          <p>${esc(x.notes || "—")}</p>
+        </div>
+      </div>
+    `,
+    async () => {},
+  );
 }
 function renderMovements() {
   $("#movementRows").innerHTML = movements.length
@@ -346,22 +422,20 @@ function addSourcing() {
       </div>
     </form>`,
     async (f) => {
-      const { error } = await db
-        .from("sourcing")
-        .insert({
-          species: f.get("species").trim(),
-          quantity: Number(f.get("quantity")),
-          source_name: f.get("source_name") || null,
-          source_contact: f.get("source_contact") || null,
-          pic: f.get("pic") || null,
-          status: f.get("status"),
-          target_date: f.get("target_date") || null,
-          eta: f.get("eta") || null,
-          price: Number(f.get("price") || 0),
-          dp: Number(f.get("dp") || 0),
-          last_update: f.get("last_update") || null,
-          notes: f.get("notes") || null,
-        });
+      const { error } = await db.from("sourcing").insert({
+        species: f.get("species").trim(),
+        quantity: Number(f.get("quantity")),
+        source_name: f.get("source_name") || null,
+        source_contact: f.get("source_contact") || null,
+        pic: f.get("pic") || null,
+        status: f.get("status"),
+        target_date: f.get("target_date") || null,
+        eta: f.get("eta") || null,
+        price: Number(f.get("price") || 0),
+        dp: Number(f.get("dp") || 0),
+        last_update: f.get("last_update") || null,
+        notes: f.get("notes") || null,
+      });
 
       if (error) throw error;
 
@@ -525,6 +599,10 @@ function setup() {
   $("#orderRows").onclick = (e) => {
     const b = e.target.closest("[data-status]");
     if (b) changeStatus(b.dataset.status);
+  };
+  $("#sourcingRows").onclick = (e) => {
+    const row = e.target.closest("[data-sourcing-id]");
+    if (row) openSourcing(row.dataset.sourcingId);
   };
   $("#dialog").onclick = (e) => {
     if (e.target.matches("[data-close]")) closeDialog();
